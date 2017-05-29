@@ -1,9 +1,11 @@
 import flask, flask.views
 app = flask.Flask(__name__)
 
+ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
+
 class View(flask.views.MethodView):
 	def get(self):
-		return flask.render_template('index.html')
+		return flask.render_template('index.html', ACCESS_KEY=ACCESS_KEY)
 	
 	def post(self):
 		return "Works!"
@@ -14,6 +16,7 @@ def searchText():
 
 @app.route('/geo', methods=['GET', 'POST'])	
 def geo():
+	
 	return "cirlce O"
 
 @app.route('/export', methods=['GET', 'POST'])
