@@ -18,16 +18,16 @@
                     <div id='map'></div>
                 </div>
                 <div class="col-md-4">
-                    <form>
+                    <form action="/searchText" method="post">
                         <div class="form-group">
                             <label for="src">Testo:</label>
                             <input type="text" class="form-control" id="src">
                         </div>
-                        <button type="button" class="btn btn-default">Search</button>
+                        <button type="submit" class="btn btn-default" name="SearchText">Search</button>
                     </form>
                     <br>
                     <br>
-                    <form>
+                    <form action="/geo" method="post">
                         <div class="form-group">
                             <label for="lat">latitudine:</label>
                             <input type="text" class="form-control" id="lat">
@@ -36,11 +36,13 @@
                             <label for="radius">raggio:</label>
                             <input type="text" class="form-control" id="radius">
                         </div>
-                        <button type="button" class="btn btn-default">Search</button>
-                        <button type="button" class="btn btn-default">Show circle</button>
+                        <button type="submit" class="btn btn-default" name="SearchGeo">Search</button>
+                        <button type="button" class="btn btn-default" name="ShowCircle">Show circle</button>
                     </form>
                     <br>
-                    <button type="button" class="btn btn-default">Export to CSV</button>
+					<form action="/export" method="post">
+						<button type="submit" class="btn btn-default">Export to CSV</button>
+					</form>
                 </div>
             </div>
         </div>
