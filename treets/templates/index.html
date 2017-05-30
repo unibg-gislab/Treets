@@ -30,7 +30,7 @@
                             <form action="/searchText" method="post">
                                 <div class="form-group">
                                     <label for="src">Testo:</label>
-                                    <input type="text" class="form-control" id="src">
+                                    <input type="text" class="form-control" id="src" name="src">
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchText">Search</button>
                             </form>
@@ -39,11 +39,11 @@
                             <form action="/geo" method="post">
                                 <div class="form-group">
                                     <label for="lat">latitudine:</label>
-                                    <input type="text" class="form-control" id="lat">
+                                    <input type="text" class="form-control" id="lat" name="lat">
                                     <label for="lon">longitudine:</label>
-                                    <input type="text" class="form-control" id="lon">
+                                    <input type="text" class="form-control" id="lon" name="lon">
                                     <label for="radius">raggio [km]:</label>
-                                    <input type="text" class="form-control" id="radius">
+                                    <input type="text" class="form-control" id="radius" name="radius">
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchGeo">Search</button>
                                 <button type="button" class="btn btn-default" name="ShowCircle" onclick="showCircle()">Show circle</button>
