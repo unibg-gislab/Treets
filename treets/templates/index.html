@@ -3,13 +3,13 @@
     <head>
         <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
 
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/map.css" rel="stylesheet">
+		<link rel="stylesheet" type=text/css href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+		<link rel="stylesheet" type=text/css href="{{url_for('static',filename='css/map.css')}}">
         <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.css' rel='stylesheet' />
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.32.1/mapbox-gl.js'></script>
-        <script src="js/bootstrap.min.js"></script>
+        <script type=application/javascript src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
     </head>
     <body>
         <div class="container">
@@ -18,43 +18,34 @@
                     <div id='map'></div>
                 </div>
                 <div class="col-md-4">
-                    <p id="info">...</p>
-                    <br>
-                    <br>
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#text" data-toggle="tab">Text</a></li>
-                        <li><a href="#coordinates" data-toggle="tab">Coordinates</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="text">
-                            <form>
-                                <div class="form-group">
-                                    <label for="src">Testo:</label>
-                                    <input type="text" class="form-control" id="src">
-                                </div>
-                                <button type="button" class="btn btn-default">Search</button>
-                            </form>
+                    <form action="/searchText" method="post">
+                        <div class="form-group">
+                            <label for="src">Testo:</label>
+                            <input type="text" class="form-control" id="src">
                         </div>
-                        <div class="tab-pane" id="coordinates">
-                            <form>
-                                <div class="form-group">
-                                    <label for="lat">latitudine:</label>
-                                    <input type="text" class="form-control" id="lat">
-                                    <label for="lon">longitudine:</label>
-                                    <input type="text" class="form-control" id="lon">
-                                    <label for="radius">raggio [km]:</label>
-                                    <input type="text" class="form-control" id="radius">
-                                </div>
-                                <button type="button" class="btn btn-default">Search</button>
-                                <button type="button" class="btn btn-default" onclick="showCircle()">Show circle</button>
-                            </form>
-                        </div>
-                    </div>
+                        <button type="submit" class="btn btn-default" name="SearchText">Search</button>
+                    </form>
                     <br>
-                    <button type="button" class="btn btn-default">Export to CSV</button>
+                    <br>
+                    <form action="/geo" method="post">
+                        <div class="form-group">
+                            <label for="lat">latitudine:</label>
+                            <input type="text" class="form-control" id="lat">
+                            <label for="lon">longitudine:</label>
+                            <input type="text" class="form-control" id="lon">
+                            <label for="radius">raggio:</label>
+                            <input type="text" class="form-control" id="radius">
+                        </div>
+                        <button type="submit" class="btn btn-default" name="SearchGeo">Search</button>
+                        <button type="button" class="btn btn-default" name="ShowCircle">Show circle</button>
+                    </form>
+                    <br>
+					<form action="/export" method="post">
+						<button type="submit" class="btn btn-default">Export to CSV</button>
+					</form>
                 </div>
             </div>
         </div>
-        <script src="js/map.js"></script>
+        <script type=application/javascript src="{{url_for('static',filename='js/map.js')}}"></script>
     </body>
 </html>
