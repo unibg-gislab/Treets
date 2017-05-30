@@ -33,4 +33,4 @@ app.add_url_rule('/', view_func=View.as_view('main'), methods=['GET', 'POST'])
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000)
