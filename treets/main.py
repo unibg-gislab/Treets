@@ -3,7 +3,7 @@ import flask.views
 app = flask.Flask(__name__)
 
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
-
+app.debug = True
 
 class View(flask.views.MethodView):
 
@@ -32,5 +32,5 @@ def export():
 app.add_url_rule('/', view_func=View.as_view('main'), methods=['GET', 'POST'])
 
 
-app.debug = True
-app.run()
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
