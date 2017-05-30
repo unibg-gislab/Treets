@@ -6,13 +6,15 @@ var map = new mapboxgl.Map({
     zoom: 6
 });
 
-map.on('mousemove', function (e) {
+map.on('dblclick', function (e) {
     document.getElementById('info').innerHTML =
         // e.point is the x, y coordinates of the mousemove event relative
         // to the top-left corner of the map
         //JSON.stringify(e.point) + "<br>" +
         // e.lngLat is the longitude, latitude geographical position of the event
         JSON.stringify(e.lngLat);
+    document.getElementById("lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
+    document.getElementById("lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
 });
 
 function showCircle(){
@@ -20,7 +22,10 @@ function showCircle(){
     var lon = document.getElementById("lon").value;
     var radius = document.getElementById("radius").value;
 
-    map.addSource("polygon", createGeoJSONCircle([parseFloat(lon), parseFloat(lat)], parseFloat(radius)));
+    if(typeof(map.getSource("polygon")) == "undefined")
+        map.addSource("polygon", createGeoJSONCircle([parseFloat(lon), parseFloat(lat)], parseFloat(radius)));
+    else
+        map.getSource("polygon").setData(createGeoJSONCircle([parseFloat(lon), parseFloat(lat)], parseFloat(radius)).data);
 
     map.addLayer({
         "id": "polygon",

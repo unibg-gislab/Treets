@@ -19,27 +19,37 @@
                 </div>
                 <div class="col-md-4">
                     <p id="info">...</p>
-                    <form>
-                        <div class="form-group">
-                            <label for="src">Testo:</label>
-                            <input type="text" class="form-control" id="src">
-                        </div>
-                        <button type="button" class="btn btn-default">Search</button>
-                    </form>
                     <br>
                     <br>
-                    <form>
-                        <div class="form-group">
-                            <label for="lat">latitudine:</label>
-                            <input type="text" class="form-control" id="lat">
-                            <label for="lon">longitudine:</label>
-                            <input type="text" class="form-control" id="lon">
-                            <label for="radius">raggio [km]:</label>
-                            <input type="text" class="form-control" id="radius">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#text" data-toggle="tab">Text</a></li>
+                        <li><a href="#coordinates" data-toggle="tab">Coordinates</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="text">
+                            <form>
+                                <div class="form-group">
+                                    <label for="src">Testo:</label>
+                                    <input type="text" class="form-control" id="src">
+                                </div>
+                                <button type="button" class="btn btn-default">Search</button>
+                            </form>
                         </div>
-                        <button type="button" class="btn btn-default">Search</button>
-                        <button type="button" class="btn btn-default" onclick="showCircle()">Show circle</button>
-                    </form>
+                        <div class="tab-pane" id="coordinates">
+                            <form>
+                                <div class="form-group">
+                                    <label for="lat">latitudine:</label>
+                                    <input type="text" class="form-control" id="lat">
+                                    <label for="lon">longitudine:</label>
+                                    <input type="text" class="form-control" id="lon">
+                                    <label for="radius">raggio [km]:</label>
+                                    <input type="text" class="form-control" id="radius">
+                                </div>
+                                <button type="button" class="btn btn-default">Search</button>
+                                <button type="button" class="btn btn-default" onclick="showCircle()">Show circle</button>
+                            </form>
+                        </div>
+                    </div>
                     <br>
                     <button type="button" class="btn btn-default">Export to CSV</button>
                 </div>
