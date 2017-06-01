@@ -9,9 +9,9 @@ DEBUG_MODE = True
 class Application(flask.Flask):
     """docstring for ClassName"""
 
-    def __init__(self, import_name):
+    def __init__(self, import_name, **args):
         self.import_name = import_name
-        super(Application, self).__init__(import_name)
+        super(Application, self).__init__(import_name, **args)
 
         self.route('/', methods=['GET', 'POST'])(self.main)
         self.route('/searchText', methods=['GET', 'POST'])(self.search_text)
