@@ -1,4 +1,4 @@
 #!/usr/bin/python
 import sys
-sys.path.append('/var/www/html/treets')
+sys.path.insert(0, '/var/www/treets/treets')
 from treets import app as application
