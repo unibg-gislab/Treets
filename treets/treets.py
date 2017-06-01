@@ -1,11 +1,15 @@
+import flask
 from pymongo import MongoClient
-import  flask
+
+# TODO: manage with os.environ.get
+MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
+DEBUG_MODE = True
 
 
 class Application(flask.Flask):
     """docstring for ClassName"""
 
-    def __init__(self, import_name, mapbox_access_token, debug=False):
+    def __init__(self, import_name):
         super(Application, self).__init__(import_name)
 
         self.route('/', methods=['GET', 'POST'])(self.main)
@@ -13,11 +17,10 @@ class Application(flask.Flask):
         self.route('/geo', methods=['GET', 'POST'])(self.search_within_cirle)
         self.routeroute('/export', methods=['GET', 'POST'])(self.export)
 
-        self.mapbox_access_token = mapbox_access_token
+        self.mapbox_access_token = MAPBOX_ACCESS_TOKEN
         self.mongo = MongoClient()
         self.db = self.mongo.test
-        self.debug = debug
-
+        self.debug = DEBUG_MODE
         self.query_issuer = None  # TODO
 
     def run(self):
