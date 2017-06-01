@@ -1,5 +1,5 @@
-from flask# import Flask, render_template, request
 from pymongo import MongoClient
+import  flask
 
 
 class Application(flask.Flask):
@@ -15,14 +15,16 @@ class Application(flask.Flask):
 
         self.mapbox_access_token = mapbox_access_token
         self.mongo = MongoClient()
-        self.db = app.mongo.test
+        self.db = self.mongo.test
         self.debug = debug
+
+        self.query_issuer = None  # TODO
 
     def run(self):
         self.app.run()
 
     def main(self):
-        return render_template('index.html', ACCESS_KEY=MAPBOX_ACCESS_KEY)
+        return flask.render_template('index.html', ACCESS_KEY=self.mapbox_access_token)
 
     def show_all_tweets(self):
         import pdb
@@ -32,9 +34,9 @@ class Application(flask.Flask):
         '''
         Search for the input string in the tweets' text
         '''
-        words = request.form['src']
+        words = flask.request.form['src']
         if words:
-            tweets = query_issuer.search(words)
+            return self.query_issuer.search(words)
 
     def search_within_cirle(self):
         '''
@@ -43,9 +45,9 @@ class Application(flask.Flask):
         radius given by user
         '''
         # TODO controllare che l'input sia numerico
-        lat = request.form['lat']
-        lon = request.form['lon']
-        radius = request.form['radius']
+        lat = flask.request.form['lat']
+        lon = flask.request.form['lon']
+        radius = flask.request.form['radius']
         message = 'lat: ' + lat + ' lon: ' + lon + ' rad: ' + radius
         if lat == '' or lon == '' or radius == '':
             message = 'campo/i mancante'
@@ -53,8 +55,3 @@ class Application(flask.Flask):
 
     def export(self):
         return "exporting"
-
-
-if __name__ == '__main__':
-
-    init()
