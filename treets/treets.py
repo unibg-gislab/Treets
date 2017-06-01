@@ -9,17 +9,8 @@ DEBUG_MODE = True
 class Application(flask.Flask):
     """docstring for ClassName"""
 
-    def __init__(self, import_name, static_path=None, static_url_path=None,
-                 static_folder='static', static_host=None,
-                 host_matching=False, template_folder='templates',
-                 instance_path=None, instance_relative_config=False,
-                 root_path=None):
-        self.import_name = import_name
-        super(Application, self).__init__(import_name, static_path, static_url_path,
-                                          static_folder, static_host,
-                                          host_matching, template_folder,
-                                          instance_path, instance_relative_config,
-                                          root_path)
+    def __init__(self, *args, **kwargs):
+        super(Application, self).__init__(*args, **kwargs)
 
         self.route('/', methods=['GET', 'POST'])(self.main)
         self.route('/searchText', methods=['GET', 'POST'])(self.search_text)
