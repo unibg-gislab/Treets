@@ -1,4 +1,4 @@
 #!/usr/bin/python
 import sys
 sys.path.insert(0, '/var/www/treets/treets')
-from treets import Application as application
+from treets import application

@@ -9,19 +9,19 @@ DEBUG_MODE = True
 class Application(flask.Flask):
     """docstring for ClassName"""
 
-    # def __init__(self, *args, **kwargs):
-    #     super(Application, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Application, self).__init__(*args, **kwargs)
 
-    #     self.route('/', methods=['GET', 'POST'])(self.main)
-    #     self.route('/searchText', methods=['GET', 'POST'])(self.search_text)
-    #     self.route('/geo', methods=['GET', 'POST'])(self.search_within_cirle)
-    #     self.routeroute('/export', methods=['GET', 'POST'])(self.export)
+        self.route('/', methods=['GET', 'POST'])(self.main)
+        self.route('/searchText', methods=['GET', 'POST'])(self.search_text)
+        self.route('/geo', methods=['GET', 'POST'])(self.search_within_cirle)
+        self.routeroute('/export', methods=['GET', 'POST'])(self.export)
 
-    #     self.mapbox_access_token = MAPBOX_ACCESS_TOKEN
-    #     self.mongo = MongoClient()
-    #     self.db = self.mongo.test
-    #     self.debug = DEBUG_MODE
-    #     self.query_issuer = None  # TODO
+        self.mapbox_access_token = MAPBOX_ACCESS_TOKEN
+        self.mongo = MongoClient()
+        self.db = self.mongo.test
+        self.debug = DEBUG_MODE
+        self.query_issuer = None  # TODO
 
     def run(self):
         self.app.run()
@@ -58,3 +58,5 @@ class Application(flask.Flask):
 
     def export(self):
         return "exporting"
+
+application = Application(__name__)
