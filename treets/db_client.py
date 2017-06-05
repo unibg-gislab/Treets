@@ -41,6 +41,12 @@ class DBClient(object):
         '''
         return self.db.tweets.find({'$text': {'$search': text}})
 
+    def search_user_tweets(self, user):
+        '''
+        '''
+        return self.db.tweets.find({"userName": user})
+		
+
 if __name__ == '__main__':
     c = DBClient()
     import pdb
