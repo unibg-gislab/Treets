@@ -31,7 +31,7 @@ class Treets(object):
         self.result = self.db_client.get_tweets_near_point(coords, dist)
         # check if not empty result
         # export result to geojson
-        # add gejson to mapbox
+        # add geojson to mapbox
 
 
 treets = Treets()

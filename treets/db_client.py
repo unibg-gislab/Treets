@@ -42,7 +42,7 @@ class DBClient(object):
         returns <limit> random tweets
         '''
         lenght = self.db.tweets.find().count()
-        rand = int(uniform(0,1)*lenght)
+        rand = int(uniform(0, 1)*lenght)
         return self.db.tweets.find().limit(limit).skip(rand)
 
     def get_tweets_near_point(self, coords, dist, limit=1000):
