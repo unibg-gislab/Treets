@@ -1,5 +1,5 @@
 mapboxgl.accessToken = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ';
-fname = 'tweets.geojson'
+fname = 'data/tweets.geojson'
 
 var map = new mapboxgl.Map({
     container: 'map',
@@ -84,14 +84,13 @@ map.on('load', function(){
         map.getSource('tweets').setData(fname);
     }, 5000);
 
-    map.addSource('tweets', {type: 'geojson', data: url});
+    map.addSource('tweets', {type: 'geojson', data: fname});
     map.addLayer({
         'id': 'tweets',
         'type': 'symbol',
         'source' :'tweets',
         'layout': {
-            'icon-image': 'rocket-15'
+            'icon-image': 'marker-15'
         }
         });
-    }
 });

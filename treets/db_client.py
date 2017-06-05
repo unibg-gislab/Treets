@@ -27,7 +27,7 @@ class DBClient(object):
         except:
             print('converting texts to unicode, this may take a while')
             for t in self.db.tweets.find():
-                t['textMessage'] = six.u(t['textMessage'])
+                t['textMessage'] = unicode(t['textMessage'])
                 self.db.tweets.save(t)
             self.db.tweets.create_index([('textMessage', 'text')])
 
@@ -73,9 +73,10 @@ class DBClient(object):
 
 if __name__ == '__main__':
     client = DBClient()
+    #client.create_locations()
     from data_converter import DataConverter
     daco = DataConverter()
-    daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'f.geojson')
+    daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'static/data/tweets.geojson')
 
     import pdb
     pdb.set_trace()

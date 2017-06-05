@@ -1,5 +1,5 @@
 from __future__ import print_function
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from db_client import DBClient
 from data_converter import DataConverter
 
@@ -47,6 +47,11 @@ class Treets(object):
 
 
 treets = Treets()
+
+
+@app.route('/data/tweets.geojson')
+def send_geojson():
+    return send_from_directory('static/data', 'tweets.geojson')
 
 
 @app.route('/', methods=['GET', 'POST'])
