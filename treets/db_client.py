@@ -14,17 +14,20 @@ class DBClient(object):
 
     def get_tweets(self, limit=1000):
         '''
+        Returns first <limit> tweets
         '''
         return self.db.tweets.find().limit(limit)
 
     def get_random_tweets(self, limit=1000):
         '''
+        returns <limit> random tweets
         '''
         lenght = self.db.tweets.find().count()
         return self.db.tweets.find().limit(limit).skip(uniform()*lenght)
 
     def get_tweets_near_point(self, coords, dist, limit=1000):
         '''
+        returns <limit> tweets whithin <dist> meters from coords
         '''
         return self.db.tweets.find({
             'location': {
@@ -36,8 +39,9 @@ class DBClient(object):
             }
         }).limit(limit)
 
-    def search_text(self, text):
+    def search_text(self, text, limit=1000):
         '''
+        search for tweets containing <text> and returns results
         '''
         return self.db.tweets.find({'$text': {'$search': text}})
 
@@ -45,4 +49,4 @@ if __name__ == '__main__':
     c = DBClient()
     import pdb
     pdb.set_trace()
-    print len([c.get_tweets()])
+    print len([e for e in c.get_tweets()])
