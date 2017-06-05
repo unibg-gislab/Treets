@@ -26,8 +26,21 @@ class DataConverter(object):
         features = [self.tweet_to_feature(tweet) for tweet in tweets]
         return geojson.FeatureCollection(features)
 
+    def save_geojson(self, data, fname):
+        '''
+        Export geojson to file
+        '''
+        with open(fname, 'wb') as f:
+            geojson.dump(f, data, sort_keys=True, indent=4)
+
     def tweets_to_table(self, tweets):
         '''
         convert list of tweets to a pandas table
         '''
         return pd.DataFrame.from_records(tweets)
+
+    def save_dataframe(self, df, fname):
+        '''
+        Export dataframe to file
+        '''
+        df.to_csv(fname, index=False)
