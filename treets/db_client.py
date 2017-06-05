@@ -45,4 +45,4 @@ if __name__ == '__main__':
     c = DBClient()
     import pdb
     pdb.set_trace()
-    c.get_tweets_near_point([45.693161, 9.5970498], 3000)
+    c.get_tweets()
