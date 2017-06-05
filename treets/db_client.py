@@ -45,8 +45,15 @@ class DBClient(object):
         '''
         return self.db.tweets.find({'$text': {'$search': text}})
 
+    def search_user_tweets(self, user):
+        '''
+        returns tweets posted by user
+        '''
+        return self.db.tweets.find({"userName": user})
+
 if __name__ == '__main__':
     c = DBClient()
     import pdb
     pdb.set_trace()
+    #c.get_tweets_near_point([45.693161, 9.5970498], 3000)
     print len([e for e in c.get_tweets()])
