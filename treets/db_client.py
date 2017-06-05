@@ -10,7 +10,18 @@ class DBClient(object):
         self.mongo = pymongo.MongoClient()
         self.db = self.mongo.test
         self.db.tweets.create_index([('location', pymongo.GEOSPHERE)])
-        self.db.tweets.create_index([('textMessage', 'text')])
+        self.check_text_index()
+
+    def check_text_index(self):
+        try:
+            self.db.tweets.create_index([('textMessage', 'text')])
+        except:
+            print 'converting texts to unicode, this may take a while'
+
+            for t in self.db.tweets.find():
+                t['textMessage'] = unicode(t['textMessage'])
+                self.db.tweets.save(t)
+            self.db.tweets.create_index([('textMessage', 'text')])
 
     def get_tweets(self, limit=1000):
         '''
