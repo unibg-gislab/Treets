@@ -27,14 +27,15 @@ def searchText():
     if src == '':
         message = 'campo mancante'
     #str(app.mongo.test.collection_names(include_system_collections=False))					textMessage
-	'''
-	mrcl_zm ha 7 tweets
-	carpoolworld ne ha 25800
-	Gus141998 ne ha 1
-	
-	for tweet in app.mongo.test.tweets.find({"userName": "mrcl_zm"}):
-		messsage = message + str(tweet)
-	'''
+
+    '''
+    mrcl_zm ha 7 tweets
+    carpoolworld ne ha 25800
+    Gus141998 ne ha 1
+
+    for tweet in app.mongo.test.tweets.find({"userName": "mrcl_zm"}):
+    messsage = message + str(tweet)
+    '''
 	#db_client.search_text(message) 
 	#db_client.get_tweets_near_point([45.701322, 9.662846], 6000).count()
 	#app.mongo.test.tweets.find_one({"textMessage": "El nuevo uniforme de la #Vinotinto. Ustedes juzguen... http://t.co/GL7XcTejXZ"})
