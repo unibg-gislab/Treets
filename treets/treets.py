@@ -25,6 +25,14 @@ class Treets(object):
         # export result to geojson
         # add geojson to mapbox
 
+    def search_user(self, text):
+        '''
+        '''
+        self.result = self.db_client.get_tweets_for_user(text)
+        # check if not empty result
+        # export result to geojson
+        # add geojson to mapbox
+
     def search_near_point(self, coords, dist):
         '''
         '''
@@ -56,7 +64,14 @@ def searchText():
     message = src
     if src == '':
         message = 'campo mancante'
-    treets.search_text(message)
+
+    result = 'OOO'
+    cursor =  treets.search_text(message)
+    result = '...'+str(cursor.count())+'...'
+    for tweet in cursor:
+        result = result + '\n' + str(tweet)
+        print tweet
+    return result
     # TODO show tweets
 
     # Conflicts below
@@ -78,6 +93,24 @@ def searchText():
     # #app.mongo.test.tweets.find_one({"textMessage": {'$regex': "obrigada"}})
     # #message + str(app.mongo.test.tweets.find({"userName": "mrcl_zm"}).count())
     #    return message
+	
+	
+@app.route('/searchUser', methods=['GET', 'POST'])
+def searchUser():
+    '''
+    Search for the user
+    '''
+    src = request.form['src']
+    message = src
+    if src == '':
+        message = 'campo mancante'
+    result = 'OOO'
+    cursor = treets.search_user(message)
+    result = '...'+str(cursor.count())+'...'
+    for tweet in cursor:
+        result = result + '\n' + str(tweet)
+        print tweet
+    return result
 
 
 @app.route('/geo', methods=['GET', 'POST'])
@@ -94,7 +127,13 @@ def geo():
     message = 'lat: ' + lat + ' lon: ' + lon + ' rad: ' + radius
     if lat == '' or lon == '' or radius == '':
         message = 'campo/i mancante'
-    return message
+    result = 'OOO'
+    cursor = treets.search_near_point([float(lat), float(lon)], float(radius)*1000)
+    result = '...'+str(cursor.count())+'...'
+    for tweet in cursor:
+        result = result + '\n' + str(tweet)
+        print tweet
+    return result
 
 
 @app.route('/export', methods=['GET', 'POST'])
