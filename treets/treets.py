@@ -11,6 +11,7 @@ MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284
 
 class Treets(object):
     """docstring for Treets"""
+
     def __init__(self):
         super(Treets, self).__init__()
         self.db_client = DBClient()
@@ -25,7 +26,6 @@ class Treets(object):
         '''
         '''
         pass
-
 
 
 treets = Treets()
@@ -51,7 +51,27 @@ def searchText():
     if src == '':
         message = 'campo mancante'
     treets.search_text(message)
-    #TODO show tweets
+    # TODO show tweets
+
+    # Conflicts below
+    # str(app.mongo.test.collection_names(include_system_collections=False))
+    # textMessage
+
+    #    '''
+    #    mrcl_zm ha 7 tweets
+    #    carpoolworld ne ha 25800
+    #    Gus141998 ne ha 1
+
+    #    for tweet in app.mongo.test.tweets.find({"userName": "mrcl_zm"}):
+    #    messsage = message + str(tweet)
+    #    '''
+    # #db_client.search_text(message)
+    # #db_client.get_tweets_near_point([45.701322, 9.662846], 6000).count()
+    # #app.mongo.test.tweets.find_one({"textMessage": "El nuevo uniforme de la #Vinotinto. Ustedes juzguen... http://t.co/GL7XcTejXZ"})
+    # #str(app.mongo.test.tweets.find({"geo": [ 38.80054799, -9.14410241 ]}).count())
+    # #app.mongo.test.tweets.find_one({"textMessage": {'$regex': "obrigada"}})
+    # #message + str(app.mongo.test.tweets.find({"userName": "mrcl_zm"}).count())
+    #    return message
 
 
 @app.route('/geo', methods=['GET', 'POST'])
