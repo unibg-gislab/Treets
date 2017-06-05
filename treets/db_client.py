@@ -45,4 +45,4 @@ if __name__ == '__main__':
     c = DBClient()
     import pdb
     pdb.set_trace()
-    c.get_tweets()
+    print len([c.get_tweets()])
