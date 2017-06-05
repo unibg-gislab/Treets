@@ -17,15 +17,21 @@ class Treets(object):
         self.db_client = DBClient()
         self.data_converter = DataConverter()
 
-    def search_text(text):
+    def search_text(self, text):
         '''
         '''
-        pass
+        self.result = self.db_client.get_tweets_for_text(text)
+        # check if not empty result
+        # export result to geojson
+        # add geojson to mapbox
 
-    def search_near_point(coords, dist):
+    def search_near_point(self, coords, dist):
         '''
         '''
-        pass
+        self.result = self.db_client.get_tweets_near_point(coords, dist)
+        # check if not empty result
+        # export result to geojson
+        # add gejson to mapbox
 
 
 treets = Treets()
