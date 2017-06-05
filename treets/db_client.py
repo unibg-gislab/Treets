@@ -51,13 +51,13 @@ class DBClient(object):
             }
         }).limit(limit)
 
-    def search_text(self, text, limit=1000):
+    def get_tweets_for_text(self, text, limit=1000):
         '''
         search for tweets containing <text> and returns results
         '''
         return self.db.tweets.find({'$text': {'$search': text}})
 
-    def search_user_tweets(self, user):
+    def get_tweets_for_user(self, user):
         '''
         returns tweets posted by user
         '''
