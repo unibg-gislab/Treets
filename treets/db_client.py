@@ -14,6 +14,13 @@ class DBClient(object):
         self.db.tweets.create_index([('location', pymongo.GEOSPHERE)])
         self.check_text_index()
 
+    def create_locations(self):
+        print('creating locations for geo-indexing, this may take a while')
+        for t in self.db.tweets.find():
+            coords = t['geo']
+            t['location'] = {'type': 'Point', 'coordinates': coords[::-1]}
+            self.db.tweets.save(t)
+
     def check_text_index(self):
         try:
             self.db.tweets.create_index([('textMessage', 'text')])
@@ -35,7 +42,8 @@ class DBClient(object):
         returns <limit> random tweets
         '''
         lenght = self.db.tweets.find().count()
-        return self.db.tweets.find().limit(limit).skip(uniform()*lenght)
+        rand = int(uniform(0,1)*lenght)
+        return self.db.tweets.find().limit(limit).skip(rand)
 
     def get_tweets_near_point(self, coords, dist, limit=1000):
         '''
@@ -64,8 +72,8 @@ class DBClient(object):
         return self.db.tweets.find({"userName": user})
 
 if __name__ == '__main__':
-    c = DBClient()
-    t = list(c.get_tweets(1))
+    client = DBClient()
+    t = list(client.get_tweets(1))
     import pdb
     pdb.set_trace()
     #c.get_tweets_near_point([45.693161, 9.5970498], 3000)
