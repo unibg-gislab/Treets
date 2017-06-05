@@ -109,7 +109,7 @@ def searchUser():
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
-        print tweet
+        print(tweet)
     return result
 
 
@@ -127,13 +127,14 @@ def geo():
     message = 'lat: ' + lat + ' lon: ' + lon + ' rad: ' + radius
     if lat == '' or lon == '' or radius == '':
         message = 'campo/i mancante'
+        print(message)
     result = 'OOO'
     cursor = treets.search_near_point(
         [float(lat), float(lon)], float(radius)*1000)
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
-        print tweet
+        print(tweet)
     return result
 
 
