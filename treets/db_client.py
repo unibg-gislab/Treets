@@ -1,5 +1,5 @@
 import pymongo
-from radnom import uniform
+from random import uniform
 
 
 class DBClient(object):
