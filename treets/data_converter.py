@@ -25,15 +25,8 @@ class DataConverter(object):
         features = [self.tweet_to_feature(tweet) for tweet in tweets]
         return geojson.FeatureCollection(features)
 
-    def tweet_to_row(self, tweet):
-        '''
-        convert tweet to a csv row
-        '''
-        pass
-
     def tweets_to_table(self, tweets):
         '''
         convert list of tweets to a pandas table
         '''
-        #rows = [self.tweet_to_row(tweet) for tweet in tweets]
-        pass
+        return pd.DataFrame.from_records(tweets)

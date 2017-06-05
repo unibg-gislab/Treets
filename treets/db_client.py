@@ -64,7 +64,7 @@ class DBClient(object):
 
 if __name__ == '__main__':
     c = DBClient()
+    t = list(c.get_tweets(1))
     import pdb
     pdb.set_trace()
     #c.get_tweets_near_point([45.693161, 9.5970498], 3000)
-    print len([e for e in c.get_tweets()])
