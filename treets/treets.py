@@ -66,11 +66,11 @@ def searchText():
         message = 'campo mancante'
 
     result = 'OOO'
-    cursor =  treets.search_text(message)
+    cursor = treets.search_text(message)
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
-        print tweet
+        print(tweet)
     return result
     # TODO show tweets
 
@@ -93,8 +93,8 @@ def searchText():
     # #app.mongo.test.tweets.find_one({"textMessage": {'$regex': "obrigada"}})
     # #message + str(app.mongo.test.tweets.find({"userName": "mrcl_zm"}).count())
     #    return message
-	
-	
+
+
 @app.route('/searchUser', methods=['GET', 'POST'])
 def searchUser():
     '''
@@ -128,7 +128,8 @@ def geo():
     if lat == '' or lon == '' or radius == '':
         message = 'campo/i mancante'
     result = 'OOO'
-    cursor = treets.search_near_point([float(lat), float(lon)], float(radius)*1000)
+    cursor = treets.search_near_point(
+        [float(lat), float(lon)], float(radius)*1000)
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
