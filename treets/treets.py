@@ -21,6 +21,10 @@ class Treets(object):
         '''
         '''
         self.result = self.db_client.get_tweets_for_text(text)
+        if not self.result.count():
+            print('no result')
+            return
+
         # check if not empty result
         # export result to geojson
         # add geojson to mapbox

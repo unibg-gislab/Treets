@@ -73,7 +73,10 @@ class DBClient(object):
 
 if __name__ == '__main__':
     client = DBClient()
-    t = list(client.get_tweets(1))
+    from data_converter import DataConverter
+    daco = DataConverter()
+    daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'f.geojson')
+
     import pdb
     pdb.set_trace()
     #c.get_tweets_near_point([45.693161, 9.5970498], 3000)

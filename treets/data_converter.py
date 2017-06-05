@@ -31,7 +31,7 @@ class DataConverter(object):
         Export geojson to file
         '''
         with open(fname, 'wb') as f:
-            geojson.dump(f, data, sort_keys=True, indent=4)
+            geojson.dump(data, f, sort_keys=True, indent=4)
 
     def tweets_to_table(self, tweets):
         '''
