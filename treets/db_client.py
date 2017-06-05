@@ -1,5 +1,7 @@
+from __future__ import print_function
 import pymongo
 from random import uniform
+import six
 
 
 class DBClient(object):
@@ -16,10 +18,9 @@ class DBClient(object):
         try:
             self.db.tweets.create_index([('textMessage', 'text')])
         except:
-            print 'converting texts to unicode, this may take a while'
-
+            print('converting texts to unicode, this may take a while')
             for t in self.db.tweets.find():
-                t['textMessage'] = unicode(t['textMessage'])
+                t['textMessage'] = six.u(t['textMessage'])
                 self.db.tweets.save(t)
             self.db.tweets.create_index([('textMessage', 'text')])
 
