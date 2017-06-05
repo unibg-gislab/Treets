@@ -17,6 +17,7 @@ map.on('dblclick', function (e) {
         JSON.stringify(e.lngLat);
     document.getElementById("lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
     document.getElementById("lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
+
 });
 
 function showCircle(){
@@ -93,4 +94,44 @@ map.on('load', function(){
             'icon-image': 'marker-15'
         }
         });
+});
+
+
+
+// When a click event occurs near a place, open a popup at the location of
+// the feature, with description HTML from its properties.
+map.on('click', function (e) {
+    if(map.popup){
+        map.popup._closeButton.click()
+    }
+    var features = map.queryRenderedFeatures(e.point, { layers: ['tweets']});
+
+    if (!features.length) {
+        return;
+    }
+
+    feature = undefined;
+    for (var i = features.length - 1; i >= 0; i--) {
+        if (features[i].properties !== undefined){
+            feature = features[i];
+            break;
+        }
+    }
+
+    // var feature = features[features.length - 1];
+
+    // Populate the popup and set its coordinates
+    // based on the feature found.
+    map.popup = new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML('<div class="popup-title"><center><h4>' + feature.properties.userName+ '</h4></ center></div><div>' + feature.properties.textMessage + '</div>')
+        .addTo(map);
+});
+
+// Use the same approach as above to indicate that the symbols are clickable
+// by changing the cursor style to 'pointer'.
+map.on('mousemove', function (e) {
+    var features = map.queryRenderedFeatures(e.point, { layers: ['tweets']});
+    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+
 });
