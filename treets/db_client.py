@@ -75,7 +75,7 @@ if __name__ == '__main__':
     client.create_locations()
     from data_converter import DataConverter
     daco = DataConverter()
-    daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'static/data/tweets.geojson')
+    daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'treets/static/data/tweets.geojson')
 
     import pdb
     pdb.set_trace()
