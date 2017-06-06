@@ -7,6 +7,7 @@ from data_converter import DataConverter
 app = Flask(__name__)
 app.debug = True
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
+data_converter =  DataConverter()
 
 
 class Treets(object):
@@ -33,6 +34,11 @@ class Treets(object):
         '''
         '''
         self.result = self.db_client.get_tweets_for_user(text)
+        if not self.result.count():
+            print('no result')
+            return
+        else:
+            return
         # check if not empty result
         # export result to geojson
         # add geojson to mapbox
@@ -40,7 +46,16 @@ class Treets(object):
     def search_near_point(self, coords, dist):
         '''
         '''
-        self.result = self.db_client.get_tweets_near_point(coords, dist)
+        self.result = self.db_client.get_tweets_near_point(coords[::-1], dist)
+        if not self.result.count():
+            print('no result')
+            return
+        else:
+            print('...'+str(self.result.count())+'...')
+            for tweet in self.result:   #
+                print(str(tweet))       #
+            data_converter.save_geojson(data_converter.tweets_to_feature_collection(self.result), 'static/data/tweets.geojson')
+            return
         # check if not empty result
         # export result to geojson
         # add geojson to mapbox
@@ -133,23 +148,24 @@ def geo():
     lat = request.form['lat']
     lon = request.form['lon']
     radius = request.form['radius']
-    message = 'lat: ' + lat + ' lon: ' + lon + ' rad: ' + radius
-    if lat == '' or lon == '' or radius == '':
-        message = 'campo/i mancante'
-        print(message)
-    result = 'OOO'
-    cursor = treets.search_near_point(
-        [float(lat), float(lon)], float(radius)*1000)
-    result = '...'+str(cursor.count())+'...'
-    for tweet in cursor:
-        result = result + '\n' + str(tweet)
-        print(tweet)
-    return result
+    if is_number(lat) and is_number(lon) and is_number(radius) and lat != '' and lon != '' and radius != '':
+        treets.search_near_point([float(lat), float(lon)], float(radius)*1000)
+        return 'lat: ' + lat + ' lon: ' + lon + ' rad: ' + radius
+    else:
+        return 'campo/i mancante o non valido/i'
 
 
 @app.route('/export', methods=['GET', 'POST'])
 def export():
     return "exporting"
+
+
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 
 # TODO: put this function in a class
