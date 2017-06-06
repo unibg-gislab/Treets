@@ -70,11 +70,6 @@ treets = Treets()
 def send_geojson():
     return send_from_directory('static/data', 'tweets.geojson')
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return 'You want path: %s' % path
-
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
@@ -144,7 +139,7 @@ def searchUser():
     return result
 
 
-@app.route('/geo', methods=['GET', 'POST'])
+@app.route('/treets/geo', methods=['GET', 'POST'])
 def geo():
     '''
     Search every tweets inside the circle

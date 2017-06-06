@@ -1,5 +1,5 @@
 mapboxgl.accessToken = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ';
-fname = 'data/tweets.geojson'
+fname = '../data/tweets.geojson'
 
 var map = new mapboxgl.Map({
     container: 'map',
