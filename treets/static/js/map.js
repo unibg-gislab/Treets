@@ -9,7 +9,7 @@ var map = new mapboxgl.Map({
 });
 
 map.on('dblclick', function (e) {
-    document.getElementById('info').innerHTML =
+    document.getElementById('current-coordinates').innerHTML =
         // e.point is the x, y coordinates of the mousemove event relative
         // to the top-left corner of the map
         //JSON.stringify(e.point) + "<br>" +
@@ -81,9 +81,6 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
 };
 
 map.on('load', function(){
-    window.setInterval(function(){
-        map.getSource('tweets').setData(fname);
-    }, 5000);
 
     map.addSource('tweets', {type: 'geojson', data: fname});
     map.addLayer({
@@ -94,6 +91,10 @@ map.on('load', function(){
             'icon-image': 'marker-15'
         }
         });
+        window.setInterval(function(){
+        map.getSource('tweets').setData(fname);
+        map._update();
+    }, 5000);
 });
 
 
@@ -132,6 +133,7 @@ map.on('click', function (e) {
 // by changing the cursor style to 'pointer'.
 map.on('mousemove', function (e) {
     var features = map.queryRenderedFeatures(e.point, { layers: ['tweets']});
-    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-
+    if (features.length){
+	    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+	}
 });
