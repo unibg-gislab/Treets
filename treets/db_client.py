@@ -10,7 +10,7 @@ class DBClient(object):
         super(DBClient, self).__init__()
         self.mongo = pymongo.MongoClient()
         self.db = self.mongo.test
-        self.db.tweets.create_index([('location', pymongo.GEOSPHERE)])
+        self.db.tweets.ensure_index([('location', pymongo.GEOSPHERE)])
         self.check_text_index()
 
     def create_locations(self):
@@ -72,7 +72,7 @@ class DBClient(object):
 
 if __name__ == '__main__':
     client = DBClient()
-    #client.create_locations()
+    client.create_locations()
     from data_converter import DataConverter
     daco = DataConverter()
     daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'static/data/tweets.geojson')

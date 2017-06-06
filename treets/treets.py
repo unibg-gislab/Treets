@@ -152,7 +152,6 @@ def export():
     return "exporting"
 
 
-# TODO: put this function in a class
 def init():
     app.run()
 

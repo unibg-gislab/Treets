@@ -3,7 +3,6 @@ from pandas import DataFrame
 import geojson
 
 
-
 class DataConverter(object):
     """docstring for DataConverter"""
 
@@ -38,7 +37,7 @@ class DataConverter(object):
         '''
         convert list of tweets to a pandas table
         '''
-        return pd.DataFrame.from_records(tweets)
+        return DataFrame.from_records(tweets)
 
     def save_dataframe(self, df, fname):
         '''
