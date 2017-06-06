@@ -1,3 +1,9 @@
+#macos cache file
+*.DS_Store
+
+# tweets file
+tweets.geojson
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
