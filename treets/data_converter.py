@@ -1,6 +1,7 @@
 from __future__ import print_function
 from pandas import DataFrame
 import geojson
+import re
 
 
 class DataConverter(object):
@@ -8,6 +9,10 @@ class DataConverter(object):
 
     def __init__(self):
         super(DataConverter, self).__init__()
+        self.url_regex = re.compile(r'''((?:mailto:|ftp://|http://|https://)[^ <>'"{}|\\^`[\]]*)''')
+
+    def encode_string_with_links(self, unencoded_string):
+        return self.url_regex.sub(r'<a target="_blank" href="\1">\1</a>', unencoded_string)
 
     def tweet_to_feature(self, tweet):
         '''
@@ -17,6 +22,8 @@ class DataConverter(object):
         properties = tweet
         for key in ['geo', 'location', 'data']:
             del properties[key]
+        properties['textMessage'] = self.encode_string_with_links(properties['textMessage'])
+        print(properties['textMessage'])
         return geojson.Feature(geometry=point, properties=properties)
 
     def tweets_to_feature_collection(self, tweets):
@@ -24,6 +31,7 @@ class DataConverter(object):
         convert list of tweets to a geojson feature collection
         '''
         features = [self.tweet_to_feature(tweet) for tweet in tweets]
+        tweets.rewind()
         return geojson.FeatureCollection(features)
 
     def save_geojson(self, data, fname):
