@@ -2,12 +2,16 @@ from __future__ import print_function
 from flask import Flask, render_template, request, send_from_directory
 from db_client import DBClient
 from data_converter import DataConverter
-
+import re
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
-data_converter =  DataConverter()
+TWEETS_GEOJSON_FILE = 'treets/static/data/tweets.geojson'
+
+data_converter = DataConverter()
 
 
 class Treets(object):
@@ -46,16 +50,14 @@ class Treets(object):
     def search_near_point(self, coords, dist):
         '''
         '''
-        self.result = self.db_client.get_tweets_near_point(coords[::-1], dist)
+        self.result = self.db_client.get_tweets_near_point(coords, dist)
         if not self.result.count():
-            print('no result')
             return
         else:
             print('...'+str(self.result.count())+'...')
-            for tweet in self.result:   #
-                print(str(tweet))       #
-            data_converter.save_geojson(data_converter.tweets_to_feature_collection(self.result), 'static/data/tweets.geojson')
-            return
+            data_converter.save_geojson(
+                data_converter.tweets_to_feature_collection(self.result), TWEETS_GEOJSON_FILE)
+            return self.result.count()
         # check if not empty result
         # export result to geojson
         # add geojson to mapbox
@@ -71,7 +73,7 @@ def send_geojson():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('index.html', ACCESS_KEY=MAPBOX_ACCESS_KEY)
+    return render_template('index.html')
 
 
 def show_all_tweets():
@@ -148,11 +150,18 @@ def geo():
     lat = request.form['lat']
     lon = request.form['lon']
     radius = request.form['radius']
-    if is_number(lat) and is_number(lon) and is_number(radius) and lat != '' and lon != '' and radius != '':
-        treets.search_near_point([float(lat), float(lon)], float(radius)*1000)
-        return 'lat: ' + lat + ' lon: ' + lon + ' rad: ' + radius
+    # FIXME: check input with js and alert errors
+    # if is_number(lat) and is_number(lon) and is_number(radius) and lat != ''
+    # and lon != '' and radius != '':
+
+    res = treets.search_near_point(
+        [float(lon), float(lat)], float(radius)*1000)
+    if res is None:
+        prompt = 'NO RESULTS!!!'
     else:
-        return 'campo/i mancante o non valido/i'
+        prompt = res
+
+    return render_template('index.html', RESULT=prompt)
 
 
 @app.route('/export', methods=['GET', 'POST'])
@@ -168,9 +177,8 @@ def is_number(s):
         return False
 
 
-
 def init():
-    app.run()
+    app.run(debug=False)
 
 if __name__ == '__main__':
     init()
