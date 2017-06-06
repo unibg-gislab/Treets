@@ -2,7 +2,7 @@
 *.DS_Store
 
 # tweets file
-treets/static/data/tweets.geojson
+*.geojson
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
