@@ -1,6 +1,6 @@
 from __future__ import print_function
+from pandas import DataFrame
 import geojson
-import pandas as pd
 
 
 class DataConverter(object):
@@ -37,7 +37,7 @@ class DataConverter(object):
         '''
         convert list of tweets to a pandas table
         '''
-        return pd.DataFrame.from_records(tweets)
+        return DataFrame.from_records(tweets)
 
     def save_dataframe(self, df, fname):
         '''

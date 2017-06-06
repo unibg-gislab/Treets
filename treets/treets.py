@@ -168,7 +168,7 @@ def is_number(s):
         return False
 
 
-# TODO: put this function in a class
+
 def init():
     app.run()
 
