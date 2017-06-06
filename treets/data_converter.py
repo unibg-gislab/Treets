@@ -1,6 +1,7 @@
 from __future__ import print_function
+from pandas import DataFrame
 import geojson
-import pandas as pd
+
 
 
 class DataConverter(object):
