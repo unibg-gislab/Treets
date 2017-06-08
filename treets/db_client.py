@@ -93,6 +93,17 @@ class DBClient(object):
             cursors.append(self.get_tweets_for_user(user))
         return cursors
 
+    def get_traces_for_text(self, text, limit=100):
+        '''
+        TODO docstring
+        '''
+        tweets = self.get_tweets_for_text(text, limit=1000)
+        users = tweets.distinct('userName')[:limit]
+        cursors = []
+        for user in users:
+            cursors.append(self.get_tweets_for_user(user))
+        return cursors
+
 
 
 

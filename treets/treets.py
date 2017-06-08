@@ -59,7 +59,14 @@ class Treets(object):
         template_args['tweets_geojson'] = str(tweets)
         template_args['traces_geojson'] = str(traces)
 
-    def search_text(self, text):
+    def search_tweets_near_point(self, coords, dist):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_tweets_near_point(coords, dist)
+        return self.tweets_to_geojson(self.result)
+
+    def search_tweets_text(self, text):
         '''
         TODO docstring
         '''
@@ -73,18 +80,18 @@ class Treets(object):
         self.result = self.db_client.get_tweets_for_user(text)
         return self.tweets_to_geojson(self.result)
 
-    def search_tweets_near_point(self, coords, dist):
-        '''
-        TODO docstring
-        '''
-        self.result = self.db_client.get_tweets_near_point(coords, dist)
-        return self.tweets_to_geojson(self.result)
-
     def search_traces_near_point(self, coords, dist):
         '''
         TODO docstring
         '''
         self.result = self.db_client.get_traces_near_point(coords, dist)
+        return self.traces_to_geojsons(self.result)
+
+    def search_traces_text(self, text):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_traces_for_text(text)
         return self.traces_to_geojsons(self.result)
 
     def tweets_to_geojson(self, result):
@@ -114,41 +121,6 @@ def main():
     return render_template('index.html', template_args=template_args)
 
 
-@app.route('/searchText', methods=['GET', 'POST'])
-def searchText():
-    '''
-    Search for the input string in the teets' text
-    '''
-    src = request.form['src']
-    message = src
-    if src == '':
-        message = 'campo mancante'
-
-    result = 'OOO'
-    cursor = treets.search_text(message)
-    result = '...'+str(cursor.count())+'...'
-    for tweet in cursor:
-        result = result + '\n' + str(tweet)
-    return result
-
-
-@app.route('/searchUser', methods=['GET', 'POST'])
-def searchUser():
-    '''
-    Search for the user
-    '''
-    src = request.form['src']
-    message = src
-    if src == '':
-        message = 'campo mancante'
-    result = 'OOO'
-    cursor = treets.search_user_tweets(message)
-    result = '...'+str(cursor.count())+'...'
-    for tweet in cursor:
-        result = result + '\n' + str(tweet)
-    return render_template('index.html', template_args=template_args)
-
-
 @app.route('/geo', methods=['GET', 'POST'])
 def geo():
     '''
@@ -165,6 +137,35 @@ def geo():
     # and lon != '' and radius != '':
     traces, tweets = treets.search_traces_near_point([lon, lat], radius)
     treets.prepare_template_args(template_args, traces, tweets)
+    return render_template('index.html', template_args=template_args)
+
+
+@app.route('/searchText', methods=['GET', 'POST'])
+def searchText():
+    '''
+    Search for the input string in the teets' text
+    '''
+    text = request.form['src']
+
+    traces, tweets = treets.search_traces_text(text)
+    treets.prepare_template_args(template_args, traces, tweets)
+    return render_template('index.html', template_args=template_args)
+
+
+@app.route('/searchUser', methods=['GET', 'POST'])
+def searchUser():
+    '''
+    Search for the user
+    '''
+    src = request.form['src']
+    message = src
+    if src == '':
+        message = 'campo mancante'
+    result = 'OOO'
+    cursor = treets.search_user_tweets(message)
+    result = '...'+str(cursor.count())+'...'
+    for tweet in cursor:
+        result = result + '\n' + str(tweet)
     return render_template('index.html', template_args=template_args)
 
 
