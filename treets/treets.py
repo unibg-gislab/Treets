@@ -8,8 +8,9 @@ app = Flask(__name__)
 app.debug = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+template_args = {}
 
-#def prefix_route(route_function, prefix='', mask='{0}{1}'):
+# def prefix_route(route_function, prefix='', mask='{0}{1}'):
 #    '''
 #      Defines a new route function with a prefix.
 #      The mask argument is a `format string` formatted with, in that order:
@@ -87,12 +88,7 @@ def send_geojson():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    return render_template('index.html')
-
-
-def show_all_tweets():
-    import pdb
-    pdb.set_trace()
+    return render_template('index.html', template_args=template_args)
 
 
 @app.route('/searchText', methods=['GET', 'POST'])
@@ -110,7 +106,6 @@ def searchText():
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
-        print(tweet)
     return result
     # TODO show tweets
 
@@ -149,8 +144,7 @@ def searchUser():
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
-        print(tweet)
-    return result
+    return render_template('index.html', template_args=template_args)
 
 
 @app.route('/geo', methods=['GET', 'POST'])
@@ -170,12 +164,10 @@ def geo():
 
     res = treets.search_near_point(
         [float(lon), float(lat)], float(radius)*1000)
-    if res is None:
-        prompt = 'NO RESULTS!!!'
-    else:
-        prompt = res
 
-    return render_template('index.html', RESULT=prompt)
+    template_args['found_tweets'] = 'NO RESULTS!!!' if res is None else res
+
+    return render_template('index.html', template_args=template_args)
 
 
 @app.route('/export', methods=['GET', 'POST'])

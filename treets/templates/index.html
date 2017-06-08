@@ -20,7 +20,7 @@
                 <div class="col-md-4">
                     <p id="current-coordinates">...</p>
 
-                    <p id="result-prompt">{{RESULT}}</p>
+                    <p id="result-prompt">{{template_args['found_tweets']}}</p>
                     <br>
                     <br>
                     <ul class="nav nav-tabs">
@@ -61,5 +61,24 @@
             </div>
         </div>
         <script type=application/javascript src="{{url_for('static',filename='js/map.js')}}"></script>
+        <script type="text/javascript">
+            fname = '../data/tweets.geojson'
+            map.on('load', function(){
+
+                map.addSource('tweets', {type: 'geojson', data: fname});
+                map.addLayer({
+                    'id': 'tweets',
+                    'type': 'symbol',
+                    'source' :'tweets',
+                    'layout': {
+                        'icon-image': 'marker-15'
+                    }
+                    });
+                    window.setInterval(function(){
+                    map.getSource('tweets').setData(fname);
+                    map._update();
+                }, 5000);
+            });
+        </script>
     </body>
 </html>
