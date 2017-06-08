@@ -8,6 +8,20 @@ app = Flask(__name__)
 app.debug = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+
+def prefix_route(route_function, prefix='', mask='{0}{1}'):
+    '''
+      Defines a new route function with a prefix.
+      The mask argument is a `format string` formatted with, in that order:
+        prefix, route
+    '''
+    def newroute(route, *args, **kwargs):
+        '''New function to prefix the route'''
+        return route_function(mask.format(prefix, route), *args, **kwargs)
+    return newroute
+
+app.route = prefix_route(app.route, '/treets')
+
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
 TWEETS_GEOJSON_FILE = 'treets/static/data/tweets.geojson'
 
