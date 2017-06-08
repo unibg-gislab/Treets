@@ -1,3 +1,5 @@
+#! /urs/bin/python
+# coding: utf8
 from __future__ import print_function
 from pandas import DataFrame
 import geojson
@@ -58,7 +60,7 @@ class DataConverter(object):
         tweet_features = []
         traces_features = [self.trace_to_feature(t, tweet_features) for t in traces]
 
-        return geojson.FeatureCollection(features), geojson.FeatureCollection(tweet_features)
+        return geojson.FeatureCollection(traces_features), geojson.FeatureCollection(tweet_features)
 
     def save_geojson(self, data, fname):
         '''

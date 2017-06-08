@@ -1,3 +1,5 @@
+#! /urs/bin/python
+# coding: utf8
 from __future__ import print_function
 import pymongo
 from random import uniform

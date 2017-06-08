@@ -1,3 +1,5 @@
+#! /urs/bin/python
+# coding: utf8
 from __future__ import print_function
 from flask import Flask, render_template, request, send_from_directory
 from db_client import DBClient
