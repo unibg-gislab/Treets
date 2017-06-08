@@ -62,10 +62,9 @@
         </div>
         <script type=application/javascript src="{{url_for('static',filename='js/map.js')}}"></script>
         <script type="text/javascript">
-            fname = '../data/tweets.geojson'
             map.on('load', function(){
 
-                map.addSource('tweets', {type: 'geojson', data: fname});
+                map.addSource('tweets', {type: 'geojson', data: {{template_args['tweets_geojson'] | safe}}});
                 map.addLayer({
                     'id': 'tweets',
                     'type': 'symbol',
@@ -75,7 +74,7 @@
                     }
                     });
                     window.setInterval(function(){
-                    map.getSource('tweets').setData(fname);
+                    map.getSource('tweets');
                     map._update();
                 }, 5000);
             });
