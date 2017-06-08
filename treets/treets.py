@@ -23,7 +23,7 @@ def prefix_route(route_function, prefix='', mask='{0}{1}'):
 app.route = prefix_route(app.route, '/treets')
 
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
-TWEETS_GEOJSON_FILE = 'treets/static/data/tweets.geojson'
+TWEETS_GEOJSON_FILE = 'static/data/tweets.geojson'
 
 data_converter = DataConverter()
 
@@ -153,7 +153,7 @@ def searchUser():
     return result
 
 
-@app.route('/treets/geo', methods=['GET', 'POST'])
+@app.route('/geo', methods=['GET', 'POST'])
 def geo():
     '''
     Search every tweets inside the circle
