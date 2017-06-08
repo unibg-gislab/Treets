@@ -23,7 +23,7 @@ class DataConverter(object):
         for key in ['geo', 'location', 'data']:
             del properties[key]
         properties['textMessage'] = self.encode_string_with_links(properties['textMessage'])
-        print(properties['textMessage'])
+        #print(properties['textMessage'])
         return geojson.Feature(geometry=point, properties=properties)
 
     def tweets_to_feature_collection(self, tweets):
