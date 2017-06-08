@@ -82,6 +82,17 @@ class DBClient(object):
             cursors.append(self.get_tweets_for_user(user))
         return cursors
 
+    def get_traces_near_point(self, coords, dist, limit=100):
+        '''
+        TODO docstring
+        '''
+        tweets = self.get_tweets_near_point(coords, dist, limit=1000)
+        users = tweets.distinct('userName')[:limit]
+        cursors = []
+        for user in users:
+            cursors.append(self.get_tweets_for_user(user))
+        return cursors
+
 
 
 

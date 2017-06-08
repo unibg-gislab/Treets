@@ -50,6 +50,7 @@ class DataConverter(object):
         trace.rewind()
         line_String = geojson.LineString(points)
         properties['color'] = '#fff'  # TODO generate random color
+        # TODO add starding  and ending dates as properties
         properties['userName'] = trace[0]['userName']
         return geojson.Feature(geometry=line_String, properties=properties)
 

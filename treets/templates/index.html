@@ -21,7 +21,8 @@
                     <p>Latitude, Longitude</p>
                     <p id="current-coords">...</p>
 
-                    <p id="result-prompt">Shown Tweets: {{template_args['shown_tweets']}}</p>
+                    <p id="result-prompt">{{template_args['shown_traces']}} Trace(s) </p>
+                    <p id="result-prompt">{{template_args['shown_tweets']}} Tweet(s) </p>
                     <br>
                     <br>
                     <ul class="nav nav-tabs">
@@ -76,7 +77,7 @@
                     },
                     "paint": {
                         "line-color": "#888",
-                        "line-width": 8
+                        "line-width": 4
                     }
                 });
 

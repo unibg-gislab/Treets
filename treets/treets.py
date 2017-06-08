@@ -53,6 +53,12 @@ class Treets(object):
         self.result = self.db_client.get_traces(limit)
         return self.traces_to_geojsons(self.result)
 
+    def prepare_template_args(self, template_args, traces, tweets):
+        template_args['shown_tweets'] = len(tweets['features'])
+        template_args['shown_traces'] = len(traces['features'])
+        template_args['tweets_geojson'] = str(tweets)
+        template_args['traces_geojson'] = str(traces)
+
     def search_text(self, text):
         '''
         TODO docstring
@@ -67,12 +73,19 @@ class Treets(object):
         self.result = self.db_client.get_tweets_for_user(text)
         return self.tweets_to_geojson(self.result)
 
-    def search_near_point(self, coords, dist):
+    def search_tweets_near_point(self, coords, dist):
         '''
         TODO docstring
         '''
         self.result = self.db_client.get_tweets_near_point(coords, dist)
         return self.tweets_to_geojson(self.result)
+
+    def search_traces_near_point(self, coords, dist):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_traces_near_point(coords, dist)
+        return self.traces_to_geojsons(self.result)
 
     def tweets_to_geojson(self, result):
         '''
@@ -97,12 +110,7 @@ def send_geojson():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    traces, tweets = treets.all_traces()
-    # tweets = treets.all_tweets()
-    template_args['shown_tweets'] = len(tweets['features'])
-    template_args['shown_traces'] = len(tweets['features'])
-    template_args['tweets_geojson'] = str(tweets)
-    template_args['traces_geojson'] = str(traces)
+    treets.prepare_template_args(template_args, *treets.all_traces())
     return render_template('index.html', template_args=template_args)
 
 
@@ -149,26 +157,14 @@ def geo():
     radius given by user
     '''
     # TODO controllare che l'input sia numerico
-    lat = request.form['lat']
-    lon = request.form['lon']
-    radius = request.form['radius']
+    lat = float(request.form['lat'])
+    lon = float(request.form['lon'])
+    radius = float(request.form['radius']) * 1000
     # FIXME: check input with js and alert errors
     # if is_number(lat) and is_number(lon) and is_number(radius) and lat != ''
     # and lon != '' and radius != '':
-
-    res = treets.search_near_point(
-        [float(lon), float(lat)], float(radius)*1000)
-
-    if res is not None:
-        found_tweets = len(res['features'])
-        tweets_geojson = res
-    else:
-        found_tweets = 'NO RESULTS!!!'
-        tweets_geojson = template_args['tweets_geojson']
-
-    template_args['shown_tweets'] = found_tweets
-    template_args['tweets_geojson'] = tweets_geojson
-
+    traces, tweets = treets.search_traces_near_point([lon, lat], radius)
+    treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
 
 

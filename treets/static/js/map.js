@@ -112,6 +112,7 @@ map.on('click', function (e) {
 
     // Populate the popup and set its coordinates
     // based on the feature found.
+    //TODO add popup for traces, show username, number of tweets, etc
     map.popup = new mapboxgl.Popup()
         .setLngLat(e.lngLat)
         .setHTML('<div class="popup-title"><center><h4>' + feature.properties.userName+ '</h4></ center></div><div>' + feature.properties.textMessage + '</div>')
@@ -121,7 +122,8 @@ map.on('click', function (e) {
 // Use the same approach as above to indicate that the symbols are clickable
 // by changing the cursor style to 'pointer'.
 map.on('mousemove', function (e) {
-    var features = map.queryRenderedFeatures(e.point, { layers: ['tweets']});
+    // FIXME
+    var features = map.queryRenderedFeatures(e.point, { layers: ['tweets', 'traces']});
     if (features.length){
 	    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 	}
