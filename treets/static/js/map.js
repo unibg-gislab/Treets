@@ -14,15 +14,16 @@ map.on('dblclick', function (e) {
         //JSON.stringify(e.point) + "<br>" +
         // e.lngLat is the longitude, latitude geographical position of the event
     //   JSON.stringify(e.lngLat);
-    document.getElementById("lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
-    document.getElementById("lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
-    document.getElementById("current-lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
-    document.getElementById("current-lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
+    lat = JSON.parse(JSON.stringify(e.lngLat)).lat.toFixed(6);
+    lng = JSON.parse(JSON.stringify(e.lngLat)).lng.toFixed(6);
+    document.getElementById("lat").value = lat;
+    document.getElementById("lon").value = lng;
 });
 
 map.on('mousemove', function (e) {
-    document.getElementById("current-lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
-    document.getElementById("current-lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
+    lat = JSON.parse(JSON.stringify(e.lngLat)).lat.toFixed(6);
+    lng = JSON.parse(JSON.stringify(e.lngLat)).lng.toFixed(6);
+    document.getElementById("current-coords").innerHTML = lat.toString() + ', ' + lng.toString();
 });
 
 function showCircle(){
