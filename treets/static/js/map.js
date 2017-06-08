@@ -86,6 +86,24 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
     };
 };
 
+function getJSONP(url, success) {
+
+    var ud = '_' + +new Date,
+        script = document.createElement('script'),
+        head = document.getElementsByTagName('head')[0] 
+               || document.documentElement;
+
+    window[ud] = function(data) {
+        head.removeChild(script);
+        success && success(data);
+    };
+
+    script.src = url.replace('callback=?', 'callback=' + ud);
+    head.appendChild(script);
+
+}
+
+
 
 
 // When a click event occurs near a place, open a popup at the location of
@@ -107,15 +125,22 @@ map.on('click', function (e) {
             break;
         }
     }
-
-    // var feature = features[features.length - 1];
-
-    // Populate the popup and set its coordinates
-    // based on the feature found.
+    //try to retrieve and show original tweet
+    res = {};
+    getJSONP('https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2F' + feature.properties.userName + '/status/' + feature.properties._id, function(data){
+        res.data = data;
+    }); 
+    if (res.data != undefined) {
+        popupHTML = res.data['html']
+    }
+    else{
+        popupHTML = '<div class="popup-title"><center><h4>' + feature.properties.userName + '</h4></ center></div><blockquote class="twitter-tweet" data-lang="it">' + feature.properties.textMessage + '</blockquote>'
+    }
+    // console.log(res.data['html'])
     //TODO add popup for traces, show username, number of tweets, etc
     map.popup = new mapboxgl.Popup()
         .setLngLat(e.lngLat)
-        .setHTML('<div class="popup-title"><center><h4>' + feature.properties.userName+ '</h4></ center></div><div>' + feature.properties.textMessage + '</div>')
+        .setHTML(popupHTML)
         .addTo(map);
 });
 
