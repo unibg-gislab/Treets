@@ -68,12 +68,17 @@
                 map.addSource('tweets', {type: 'geojson', data: {{template_args['tweets_geojson'] | safe}}});
                 map.addLayer({
                     'id': 'tweets',
-                    'type': 'symbol',
+                    'type': 'circle',
                     'source' :'tweets',
-                    'layout': {
-                        'icon-image': 'marker-15'
+                    'paint': {
+                    // make circles larger as the user zooms from z12 to z22
+                        'circle-radius': {
+                            'base': 2.75,
+                            'stops': [[1, 3], [22, 180]]
+                        },
+                        'circle-color': '#fff'
                     }
-                    });
+                });
                     window.setInterval(function(){
                     map.getSource('tweets');
                     map._update();
