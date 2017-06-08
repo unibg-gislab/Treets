@@ -88,7 +88,9 @@ def send_geojson():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    template_args['tweets_geojson'] = str(treets.all_tweets(limit=1000))
+    tweets = treets.all_tweets()
+    template_args['shown_tweets'] = len(tweets['features'])
+    template_args['tweets_geojson'] = str(tweets)
     return render_template('index.html', template_args=template_args)
 
 
@@ -152,7 +154,7 @@ def geo():
         found_tweets = 'NO RESULTS!!!'
         tweets_geojson = template_args['tweets_geojson']
 
-    template_args['found_tweets'] = found_tweets
+    template_args['shown_tweets'] = found_tweets
     template_args['tweets_geojson'] = tweets_geojson
 
     return render_template('index.html', template_args=template_args)
@@ -169,6 +171,7 @@ def is_number(s):
         return True
     except ValueError:
         return False
+
 
 def init():
     app.run(debug=False)

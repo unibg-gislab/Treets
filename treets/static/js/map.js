@@ -8,15 +8,21 @@ var map = new mapboxgl.Map({
 });
 
 map.on('dblclick', function (e) {
-    document.getElementById('current-coordinates').innerHTML =
+    //document.getElementById('current-coordinates').innerHTML =
         // e.point is the x, y coordinates of the mousemove event relative
         // to the top-left corner of the map
         //JSON.stringify(e.point) + "<br>" +
         // e.lngLat is the longitude, latitude geographical position of the event
-        JSON.stringify(e.lngLat);
+    //   JSON.stringify(e.lngLat);
     document.getElementById("lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
     document.getElementById("lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
+    document.getElementById("current-lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
+    document.getElementById("current-lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
+});
 
+map.on('mousemove', function (e) {
+    document.getElementById("current-lat").value = JSON.parse(JSON.stringify(e.lngLat)).lat;
+    document.getElementById("current-lon").value = JSON.parse(JSON.stringify(e.lngLat)).lng;
 });
 
 function showCircle(){
