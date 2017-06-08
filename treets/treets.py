@@ -2,7 +2,6 @@ from __future__ import print_function
 from flask import Flask, render_template, request, send_from_directory
 from db_client import DBClient
 from data_converter import DataConverter
-import re
 
 app = Flask(__name__)
 app.debug = False
@@ -10,23 +9,24 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 template_args = {}
 
-# def prefix_route(route_function, prefix='', mask='{0}{1}'):
-#    '''
-#      Defines a new route function with a prefix.
-#      The mask argument is a `format string` formatted with, in that order:
-#        prefix, route
-#    '''
-#    def newroute(route, *args, **kwargs):
-#        '''New function to prefix the route'''
-#        return route_function(mask.format(prefix, route), *args, **kwargs)
-#    return newroute
-#
-#app.route = prefix_route(app.route, '/treets')
 
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
 TWEETS_GEOJSON_FILE = 'treets/static/data/tweets.geojson'
 
-data_converter = DataConverter()
+
+def prefix_route(route_function, prefix='', mask='{0}{1}'):
+    '''
+      Defines a new route function with a prefix.
+      The mask argument is a `format string` formatted with, in that order:
+        prefix, route
+    '''
+    def newroute(route, *args, **kwargs):
+        '''New function to prefix the route'''
+        return route_function(mask.format(prefix, route), *args, **kwargs)
+    return newroute
+
+if __name__ == '__main__':
+    app.route = prefix_route(app.route, '/treets')
 
 
 class Treets(object):
@@ -37,6 +37,12 @@ class Treets(object):
         self.db_client = DBClient()
         self.data_converter = DataConverter()
 
+    def all_tweets(self, limit=10000):
+        '''
+        '''
+        self.result = self.db_client.get_tweets(limit)
+        return self.result_to_geojson()
+
     def search_text(self, text):
         '''
         '''
@@ -44,10 +50,6 @@ class Treets(object):
         if not self.result.count():
             print('no result')
             return
-
-        # check if not empty result
-        # export result to geojson
-        # add geojson to mapbox
 
     def search_user(self, text):
         '''
@@ -58,24 +60,22 @@ class Treets(object):
             return
         else:
             return
-        # check if not empty result
-        # export result to geojson
-        # add geojson to mapbox
 
     def search_near_point(self, coords, dist):
         '''
         '''
         self.result = self.db_client.get_tweets_near_point(coords, dist)
-        if not self.result.count():
+        return self.result_to_geojson()
+
+    def result_to_geojson(self, result=None):
+        if not result:
+            result = self.result
+        if not result.count():
             return
         else:
-            print('...'+str(self.result.count())+'...')
-            data_converter.save_geojson(
-                data_converter.tweets_to_feature_collection(self.result), TWEETS_GEOJSON_FILE)
-            return self.result.count()
-        # check if not empty result
-        # export result to geojson
-        # add geojson to mapbox
+            feature_collection = self.data_converter.tweets_to_feature_collection(
+                result)
+            return feature_collection
 
 
 treets = Treets()
@@ -88,6 +88,7 @@ def send_geojson():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
+    template_args['tweets_geojson'] = str(treets.all_tweets(limit=1000))
     return render_template('index.html', template_args=template_args)
 
 
@@ -107,27 +108,6 @@ def searchText():
     for tweet in cursor:
         result = result + '\n' + str(tweet)
     return result
-    # TODO show tweets
-
-    # Conflicts below
-    # str(app.mongo.test.collection_names(include_system_collections=False))
-    # textMessage
-
-    #    '''
-    #    mrcl_zm ha 7 tweets
-    #    carpoolworld ne ha 25800
-    #    Gus141998 ne ha 1
-
-    #    for tweet in app.mongo.test.tweets.find({"userName": "mrcl_zm"}):
-    #    messsage = message + str(tweet)
-    #    '''
-    # #db_client.search_text(message)
-    # #db_client.get_tweets_near_point([45.701322, 9.662846], 6000).count()
-    # #app.mongo.test.tweets.find_one({"textMessage": "El nuevo uniforme de la #Vinotinto. Ustedes juzguen... http://t.co/GL7XcTejXZ"})
-    # #str(app.mongo.test.tweets.find({"geo": [ 38.80054799, -9.14410241 ]}).count())
-    # #app.mongo.test.tweets.find_one({"textMessage": {'$regex': "obrigada"}})
-    # #message + str(app.mongo.test.tweets.find({"userName": "mrcl_zm"}).count())
-    #    return message
 
 
 @app.route('/searchUser', methods=['GET', 'POST'])
@@ -165,7 +145,15 @@ def geo():
     res = treets.search_near_point(
         [float(lon), float(lat)], float(radius)*1000)
 
-    template_args['found_tweets'] = 'NO RESULTS!!!' if res is None else res
+    if res is not None:
+        found_tweets = len(res['features'])
+        tweets_geojson = res
+    else:
+        found_tweets = 'NO RESULTS!!!'
+        tweets_geojson = template_args['tweets_geojson']
+
+    template_args['found_tweets'] = found_tweets
+    template_args['tweets_geojson'] = tweets_geojson
 
     return render_template('index.html', template_args=template_args)
 
@@ -181,7 +169,6 @@ def is_number(s):
         return True
     except ValueError:
         return False
-
 
 def init():
     app.run(debug=False)
