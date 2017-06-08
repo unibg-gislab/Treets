@@ -65,6 +65,22 @@
         <script type="text/javascript">
             map.on('load', function(){
 
+                map.addSource('traces', {type: 'geojson', data: {{template_args['traces_geojson'] | safe}}});
+                map.addLayer({
+                    'id': 'traces',
+                    'type': 'line',
+                    'source' :'traces',
+                    "layout": {
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-color": "#888",
+                        "line-width": 8
+                    }
+                });
+
+
                 map.addSource('tweets', {type: 'geojson', data: {{template_args['tweets_geojson'] | safe}}});
                 map.addLayer({
                     'id': 'tweets',
@@ -79,10 +95,10 @@
                         'circle-color': '#fff'
                     }
                 });
-                    window.setInterval(function(){
-                    map.getSource('tweets');
-                    map._update();
-                }, 5000);
+                //     window.setInterval(function(){
+                //     map.getSource('tweets');
+                //     map._update();
+                // }, 5000);
             });
         </script>
     </body>

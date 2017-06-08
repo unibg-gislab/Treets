@@ -70,13 +70,18 @@ class DBClient(object):
         '''
         return self.db.tweets.find({"userName": user})
 
-if __name__ == '__main__':
-    client = DBClient()
-    client.create_locations()
-    from data_converter import DataConverter
-    daco = DataConverter()
-    daco.save_geojson(daco.tweets_to_feature_collection(client.get_tweets()), 'treets/static/data/tweets.geojson')
+    def get_traces(self, limit=100):
+        '''
+        Returns first <limit> lists of tweets from the same users
+        '''
+        users = self.db.tweets.distinct('userName')[:limit]
+        cursors = []
+        for user in users:
+            cursors.append(self.get_tweets_for_user(user))
+        return cursors
 
-    import pdb
-    pdb.set_trace()
-    #c.get_tweets_near_point([45.693161, 9.5970498], 3000)
+
+
+
+if __name__ == '__main__':
+    pass

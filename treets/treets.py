@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
 
 class Treets(object):
-    """docstring for Treets"""
+    """TODO docstring for Treets"""
 
     def __init__(self):
         super(Treets, self).__init__()
@@ -39,43 +39,50 @@ class Treets(object):
 
     def all_tweets(self, limit=10000):
         '''
+        TODO docstring
         '''
         self.result = self.db_client.get_tweets(limit)
-        return self.result_to_geojson()
+        return self.tweets_to_geojson(self.result)
+
+    def all_traces(self, limit=100):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_traces(limit)
+        return self.traces_to_geojsons(self.result)
 
     def search_text(self, text):
         '''
+        TODO docstring
         '''
         self.result = self.db_client.get_tweets_for_text(text)
-        if not self.result.count():
-            print('no result')
-            return
+        return self.tweets_to_geojson(self.result)
 
-    def search_user(self, text):
+    def search_user_tweets(self, text):
         '''
+        TODO docstring
         '''
         self.result = self.db_client.get_tweets_for_user(text)
-        if not self.result.count():
-            print('no result')
-            return
-        else:
-            return
+        return self.tweets_to_geojson(self.result)
 
     def search_near_point(self, coords, dist):
         '''
+        TODO docstring
         '''
         self.result = self.db_client.get_tweets_near_point(coords, dist)
-        return self.result_to_geojson()
+        return self.tweets_to_geojson(self.result)
 
-    def result_to_geojson(self, result=None):
-        if not result:
-            result = self.result
-        if not result.count():
-            return
-        else:
-            feature_collection = self.data_converter.tweets_to_feature_collection(
-                result)
-            return feature_collection
+    def tweets_to_geojson(self, result):
+        '''
+        TODO docstring
+        '''
+        return self.data_converter.tweets_to_feature_collection(result)
+
+    def traces_to_geojsons(self, result):
+        '''
+        Returns a geojson fìcontaining all traces and a geojson containing all tweets
+        '''
+        return self.data_converter.traces_to_feature_collection(result)
 
 
 treets = Treets()
@@ -88,9 +95,12 @@ def send_geojson():
 
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    tweets = treets.all_tweets()
+    traces, tweets = treets.all_traces()
+    # tweets = treets.all_tweets()
     template_args['shown_tweets'] = len(tweets['features'])
+    template_args['shown_traces'] = len(tweets['features'])
     template_args['tweets_geojson'] = str(tweets)
+    template_args['traces_geojson'] = str(traces)
     return render_template('index.html', template_args=template_args)
 
 
@@ -122,7 +132,7 @@ def searchUser():
     if src == '':
         message = 'campo mancante'
     result = 'OOO'
-    cursor = treets.search_user(message)
+    cursor = treets.search_user_tweets(message)
     result = '...'+str(cursor.count())+'...'
     for tweet in cursor:
         result = result + '\n' + str(tweet)
