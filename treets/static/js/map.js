@@ -86,25 +86,35 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
     };
 };
 
-function getJSONP(url, success) {
 
-    var ud = '_' + +new Date,
-        script = document.createElement('script'),
-        head = document.getElementsByTagName('head')[0] 
-               || document.documentElement;
-
-    window[ud] = function(data) {
-        head.removeChild(script);
-        success && success(data);
-    };
-
-    script.src = url.replace('callback=?', 'callback=' + ud);
-    head.appendChild(script);
-
+function getJSON(url, callback) {
+    $.ajax({
+      url: url,
+      type: 'GET',
+      cache: "false",
+      dataType: 'jsonp',
+      success: function(data){
+            $.getScript ( '//platform.twitter.com/widgets.js', callback(data));
+        },
+      error: callback
+    });
 }
 
+function hashCode(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+       hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+} 
 
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
 
+    return "00000".substring(0, 6 - c.length) + c;
+}
 
 // When a click event occurs near a place, open a popup at the location of
 // the feature, with description HTML from its properties.
@@ -112,36 +122,48 @@ map.on('click', function (e) {
     if(map.popup){
         map.popup._closeButton.click()
     }
-    var features = map.queryRenderedFeatures(e.point, { layers: ['tweets']});
+    var features = map.queryRenderedFeatures(e.point, { layers: ['tweets', 'traces']});
 
     if (!features.length) {
         return;
     }
-
-    feature = undefined;
+    feature = undefined
     for (var i = features.length - 1; i >= 0; i--) {
         if (features[i].properties !== undefined){
             feature = features[i];
             break;
         }
     }
+
+    if (feature.layer.id == 'traces')
+    {
+        popupHTML = '<div class="popup-title"><center><h4>' + feature.properties.userName + '</h4></ center></div><div># of Tweets: ' + feature.properties.count + '</div>'
+        popupHTML += '</br><form action="/treets/export" method="post">\
+                                <button type="submit" class="btn btn-default" name="export" value="'+ feature.properties.userName +'">Export</button>\
+                            </form>'
+        map.popup = new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupHTML)
+            .addTo(map);
+        return;
+
+    }
     //try to retrieve and show original tweet
     res = {};
-    getJSONP('https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2F' + feature.properties.userName + '/status/' + feature.properties._id, function(data){
-        res.data = data;
-    }); 
-    if (res.data != undefined) {
-        popupHTML = res.data['html']
-    }
-    else{
-        popupHTML = '<div class="popup-title"><center><h4>' + feature.properties.userName + '</h4></ center></div><blockquote class="twitter-tweet" data-lang="it">' + feature.properties.textMessage + '</blockquote>'
-    }
-    // console.log(res.data['html'])
-    //TODO add popup for traces, show username, number of tweets, etc
-    map.popup = new mapboxgl.Popup()
-        .setLngLat(e.lngLat)
-        .setHTML(popupHTML)
-        .addTo(map);
+    twurl = 'https://publish.twitter.com/oembed?url=https://twitter.com/' + feature.properties.userName + '/status/' + feature.properties._id
+
+    res = getJSON(twurl, function(data){
+        if (data.html != undefined) {
+            popupHTML = data.html
+        }
+        else{
+            popupHTML = '<div class="popup-title"><center><h4>' + feature.properties.userName + '</h4></ center></div><blockquote class="twitter-tweet" data-lang="it">' + feature.properties.textMessage + '</blockquote>'
+        }
+        map.popup = new mapboxgl.Popup()
+            .setLngLat(e.lngLat)
+            .setHTML(popupHTML)
+            .addTo(map);
+    });
 });
 
 // Use the same approach as above to indicate that the symbols are clickable

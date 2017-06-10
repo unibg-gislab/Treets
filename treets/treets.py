@@ -1,9 +1,11 @@
 #! /urs/bin/python
 # coding: utf8
 from __future__ import print_function
-from flask import Flask, render_template, request, send_from_directory
+from flask import Flask, render_template, request, send_from_directory, send_file, after_this_request
 from db_client import DBClient
 from data_converter import DataConverter
+import time
+import os
 
 app = Flask(__name__)
 app.debug = True
@@ -94,6 +96,16 @@ class Treets(object):
         self.result = self.db_client.get_traces_for_text(text)
         return self.traces_to_geojsons(self.result)
 
+    def export_trace(self, user_name):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_tweets_for_user(user_name)
+        tweets_df = self.data_converter.tweets_to_table(self.result)
+        fname = user_name + '_' + time.strftime("%Y%m%d-%H%M%S") + '.csv'
+        tweets_df.to_csv(fname, index=False, sep=';', encoding='utf-8', decimal=',')
+        return fname
+
     def tweets_to_geojson(self, result):
         '''
         TODO docstring
@@ -152,6 +164,24 @@ def searchText():
     return render_template('index.html', template_args=template_args)
 
 
+@app.route('/export', methods=['GET', 'POST'])
+def export():
+    '''
+    '''
+    user_name = request.form['export']
+    fname = treets.export_trace(user_name)
+
+    @after_this_request
+    def remove_file(response):
+        os.remove(fname)
+        return response
+
+    return send_file(fname,
+                     mimetype='text/csv',
+                     attachment_filename=fname,
+                     as_attachment=True)
+
+
 @app.route('/searchUser', methods=['GET', 'POST'])
 def searchUser():
     '''
@@ -168,10 +198,6 @@ def searchUser():
         result = result + '\n' + str(tweet)
     return render_template('index.html', template_args=template_args)
 
-
-@app.route('/export', methods=['GET', 'POST'])
-def export():
-    return "exporting"
 
 
 def is_number(s):

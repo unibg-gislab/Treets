@@ -4,6 +4,7 @@ from __future__ import print_function
 from pandas import DataFrame
 import geojson
 import re
+import sha
 
 
 class DataConverter(object):
@@ -23,10 +24,12 @@ class DataConverter(object):
         '''
         point = tweet['location']
         properties = tweet
+        properties['_id'] = str(properties['_id'])
         for key in ['geo', 'location', 'data']:
             del properties[key]
         properties['textMessage'] = self.encode_string_with_links(properties[
                                                                   'textMessage'])
+        properties['color'] = '#' + sha.sha(tweet['userName']).hexdigest()[:6]
         return geojson.Feature(geometry=point, properties=properties)
 
     def tweets_to_feature_collection(self, tweets):
@@ -49,7 +52,8 @@ class DataConverter(object):
             tweet_features.append(self.tweet_to_feature(tweet))
         trace.rewind()
         line_String = geojson.LineString(points)
-        properties['color'] = '#fff'  # TODO generate random color
+        properties['count'] = trace.count()
+        properties['color'] = '#' + sha.sha(trace[0]['userName']).hexdigest()[:6]
         # TODO add starding  and ending dates as properties
         properties['userName'] = trace[0]['userName']
         return geojson.Feature(geometry=line_String, properties=properties)
@@ -74,7 +78,18 @@ class DataConverter(object):
         '''
         converts list of tweets to a pandas table
         '''
-        return DataFrame.from_records(tweets)
+        table = []
+        for tweet in tweets:
+            t = {}
+            t['userName'] = tweet['userName']
+            t['stringDate'] = tweet['stringDate']
+            t['stringTime'] = tweet['stringTime']
+            t['Latitude'] = tweet['geo'][0]
+            t['Longitude'] = tweet['geo'][1]
+            t['textMessage'] = tweet['textMessage']
+            t['url'] = 'http://twitter.com/' + tweet['userName'] + '/status/' +  str(tweet['_id'])
+            table.append(t)
+        return DataFrame.from_records(table)
 
     def save_dataframe(self, df, fname):
         '''

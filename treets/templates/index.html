@@ -7,10 +7,9 @@
 		<link rel="stylesheet" type=text/css href="{{url_for('static',filename='css/map.css')}}">
         <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.css' rel='stylesheet' />
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.37.0/mapbox-gl.js'></script>
         <script type=application/javascript src="{{url_for('static',filename='js/bootstrap.min.js')}}"></script>
-        <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
     </head>
     <body>
         <div class="container">
@@ -73,12 +72,14 @@
                     'type': 'line',
                     'source' :'traces',
                     "layout": {
-                        "line-join": "round",
-                        "line-cap": "round"
+                        "line-join": "bevel",
+                        "line-cap": "butt"
                     },
                     "paint": {
-                        "line-color": "#888",
-                        "line-width": 4
+                        "line-color": {
+                            "type": "identity",
+                            property: 'color'},
+                        "line-width": 3
                     }
                 });
 
@@ -90,11 +91,10 @@
                     'source' :'tweets',
                     'paint': {
                     // make circles larger as the user zooms from z12 to z22
-                        'circle-radius': {
-                            'base': 2.75,
-                            'stops': [[1, 3], [22, 180]]
-                        },
-                        'circle-color': '#fff'
+                        'circle-radius': 5,
+                        'circle-color': {
+                            "type": "identity",
+                            property: 'color'}
                     }
                 });
                 //     window.setInterval(function(){
