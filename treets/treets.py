@@ -5,7 +5,7 @@ from data_converter import DataConverter
 import re
 
 app = Flask(__name__)
-app.debug = False
+app.debug = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
@@ -178,7 +178,7 @@ def is_number(s):
 
 
 def init():
-    app.run(debug=False)
+    app.run(debug=True)
 
 if __name__ == '__main__':
     init()

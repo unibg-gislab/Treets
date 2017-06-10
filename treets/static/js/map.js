@@ -5,8 +5,21 @@ var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v9',
     center: [9.13734351262877, 45.137451890638886],
-    zoom: 6
+    zoom: 4
 });
+
+var layerList = document.getElementById('menu');
+var inputs = layerList.getElementsByTagName('input');
+
+function switchLayer(layer) {
+    var layerId = layer.target.id;
+    map.setStyle('mapbox://styles/mapbox/' + layerId + '-v9');
+}
+
+for (var i = 0; i < inputs.length; i++) {
+    inputs[i].onclick = switchLayer;
+}
+
 
 map.on('dblclick', function (e) {
     document.getElementById('current-coordinates').innerHTML =
@@ -82,16 +95,66 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
 
 map.on('load', function(){
 
-    map.addSource('tweets', {type: 'geojson', data: fname});
+    map.addSource('tweets', {
+        type: 'geojson',
+        data: fname,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 50
+    });
     map.addLayer({
         'id': 'tweets',
-        'type': 'symbol',
+        'type': 'circle',
         'source' :'tweets',
-        'layout': {
-            'icon-image': 'marker-15'
+        filter: ["has", "point_count"],
+        paint: {
+            "circle-color": {
+                property: "point_count",
+                type: "interval",
+                stops: [
+                    [0, "#51bbd6"],
+                    [100, "#f1f075"],
+                    [750, "#f28cb1"],
+                ]
+            },
+            "circle-radius": {
+                property: "point_count",
+                type: "interval",
+                stops: [
+                    [0, 20],
+                    [100, 30],
+                    [750, 40]
+                ]
+            }
         }
-        });
-        window.setInterval(function(){
+    });
+
+    map.addLayer({
+        id: "cluster-count",
+        type: "symbol",
+        source: "earthquakes",
+        filter: ["has", "point_count"],
+        layout: {
+            "text-field": "{point_count_abbreviated}",
+            "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+            "text-size": 12
+        }
+    });
+
+    map.addLayer({
+        id: "unclustered-point",
+        type: "circle",
+        source: "earthquakes",
+        filter: ["!has", "point_count"],
+        paint: {
+            "circle-color": "#11b4da",
+            "circle-radius": 4,
+            "circle-stroke-width": 1,
+            "circle-stroke-color": "#fff"
+        }
+    });
+
+    window.setInterval(function(){
         map.getSource('tweets').setData(fname);
         map._update();
     }, 5000);
