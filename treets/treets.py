@@ -102,7 +102,7 @@ class Treets(object):
         '''
         self.result = self.db_client.get_tweets_for_user(user_name)
         tweets_df = self.data_converter.tweets_to_table(self.result)
-        fname = user_name + '_' + time.strftime("%Y%m%d-%H%M%S") + '.csv'
+        fname = '/tmp/' + user_name + '_' + time.strftime("%Y%m%d-%H%M%S") + '.csv'
         tweets_df.to_csv(fname, index=False, sep=';', encoding='utf-8', decimal=',')
         return fname
 
