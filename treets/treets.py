@@ -13,7 +13,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 template_args = {}
 
-
+TMP_FOLDER = '/tmp/'
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
 TWEETS_GEOJSON_FILE = 'treets/static/data/tweets.geojson'
 
@@ -102,8 +102,8 @@ class Treets(object):
         '''
         self.result = self.db_client.get_tweets_for_user(user_name)
         tweets_df = self.data_converter.tweets_to_table(self.result)
-        fname = '/tmp/' + user_name + '_' + time.strftime("%Y%m%d-%H%M%S") + '.csv'
-        tweets_df.to_csv(fname, index=False, sep=';', encoding='utf-8', decimal=',')
+        fname =  user_name + '_' + time.strftime("%Y%m%d-%H%M%S") + '.csv'
+        tweets_df.to_csv(TMP_FOLDER + fname, index=False, sep=';', encoding='utf-8', decimal=',')
         return fname
 
     def tweets_to_geojson(self, result):
@@ -173,10 +173,10 @@ def export():
 
     @after_this_request
     def remove_file(response):
-        os.remove(fname)
+        os.remove(TMP_FOLDER + fname)
         return response
 
-    return send_file(fname,
+    return send_file(TMP_FOLDER + fname,
                      mimetype='text/csv',
                      attachment_filename=fname,
                      as_attachment=True)
