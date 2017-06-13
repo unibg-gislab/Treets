@@ -48,7 +48,7 @@ class Treets(object):
         self.result = self.db_client.get_tweets(limit)
         return self.tweets_to_geojson(self.result)
 
-    def all_traces(self, limit=100):
+    def all_traces(self, limit=10):
         '''
         TODO docstring
         '''

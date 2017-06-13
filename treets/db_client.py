@@ -4,6 +4,8 @@ from __future__ import print_function
 import pymongo
 from random import uniform
 
+TWEETS_LIMIT = 100
+TRACES_LIMIT = 10
 
 class DBClient(object):
     '''Docstring for DBClient'''
@@ -12,8 +14,6 @@ class DBClient(object):
         super(DBClient, self).__init__()
         self.mongo = pymongo.MongoClient()
         self.db = self.mongo.test
-        self.db.tweets.ensure_index([('location', pymongo.GEOSPHERE)])
-        self.check_text_index()
 
     def create_locations(self):
         print('creating locations for geo-indexing, this may take a while')
@@ -21,6 +21,7 @@ class DBClient(object):
             coords = t['geo']
             t['location'] = {'type': 'Point', 'coordinates': coords[::-1]}
             self.db.tweets.save(t)
+        self.db.tweets.ensure_index([('location', pymongo.GEOSPHERE)])
 
     def check_text_index(self):
         try:
@@ -32,13 +33,13 @@ class DBClient(object):
                 self.db.tweets.save(t)
             self.db.tweets.create_index([('textMessage', 'text')])
 
-    def get_tweets(self, limit=1000):
+    def get_tweets(self, limit=TWEETS_LIMIT):
         '''
         Returns first <limit> tweets
         '''
-        return self.db.tweets.find().limit(limit)
+        return self.db.tweets.find().sort([('_id', -1)]).limit(limit)
 
-    def get_random_tweets(self, limit=1000):
+    def get_random_tweets(self, limit=TWEETS_LIMIT):
         '''
         returns <limit> random tweets
         '''
@@ -46,7 +47,7 @@ class DBClient(object):
         rand = int(uniform(0, 1)*lenght)
         return self.db.tweets.find().limit(limit).skip(rand)
 
-    def get_tweets_near_point(self, coords, dist, limit=1000):
+    def get_tweets_near_point(self, coords, dist, limit=TWEETS_LIMIT):
         '''
         returns <limit> tweets whithin <dist> meters from coords
         '''
@@ -58,50 +59,50 @@ class DBClient(object):
                     }, '$maxDistance': dist
                 }
             }
-        }).limit(limit)
+        }).sort([('_id', -1)])
 
-    def get_tweets_for_text(self, text, limit=1000):
+    def get_tweets_for_text(self, text, limit=TWEETS_LIMIT):
         '''
         search for tweets containing <text> and returns results
         '''
-        return self.db.tweets.find({'$text': {'$search': text}})
+        return self.db.tweets.find({'$text': {'$search': text}}).sort([('_id', -1)]).limit(limit)
 
-    def get_tweets_for_user(self, user):
+    def get_tweets_for_user(self, user, limit=TWEETS_LIMIT):
         '''
         returns tweets posted by user
         '''
-        return self.db.tweets.find({"userName": user})
+        return self.db.tweets.find({"userName": user}).sort([('_id', -1)]).limit(limit)
 
-    def get_traces(self, limit=100):
+    def get_traces(self, limit=TRACES_LIMIT):
         '''
         Returns first <limit> lists of tweets from the same users
         '''
         users = self.db.tweets.distinct('userName')[:limit]
         cursors = []
         for user in users:
-            cursors.append(self.get_tweets_for_user(user))
+            cursors.append(self.get_tweets_for_user(user, limit=30))
         return cursors
 
-    def get_traces_near_point(self, coords, dist, limit=100):
+    def get_traces_near_point(self, coords, dist, limit=TRACES_LIMIT):
         '''
         TODO docstring
         '''
-        tweets = self.get_tweets_near_point(coords, dist, limit=1000)
+        tweets = self.get_tweets_near_point(coords, dist, limit=TRACES_LIMIT)
         users = tweets.distinct('userName')[:limit]
         cursors = []
         for user in users:
             cursors.append(self.get_tweets_for_user(user))
         return cursors
 
-    def get_traces_for_text(self, text, limit=100):
+    def get_traces_for_text(self, text, limit=TRACES_LIMIT):
         '''
         TODO docstring
         '''
-        tweets = self.get_tweets_for_text(text, limit=1000)
+        tweets = self.get_tweets_for_text(text, limit=TRACES_LIMIT)
         users = tweets.distinct('userName')[:limit]
         cursors = []
         for user in users:
-            cursors.append(self.get_tweets_for_user(user))
+            cursors.append(self.get_tweets_for_user(user, limit=30))
         return cursors
 
 
