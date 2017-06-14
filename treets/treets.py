@@ -13,6 +13,9 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 template_args = {}
 
+TWEETS_LIMIT = 0
+TRACES_LIMIT = 100
+
 TMP_FOLDER = '/tmp/'
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
 TWEETS_GEOJSON_FILE = 'treets/static/data/tweets.geojson'
@@ -41,14 +44,14 @@ class Treets(object):
         self.db_client = DBClient()
         self.data_converter = DataConverter()
 
-    def all_tweets(self, limit=10000):
+    def all_tweets(self, limit=TWEETS_LIMIT):
         '''
         TODO docstring
         '''
         self.result = self.db_client.get_tweets(limit)
         return self.tweets_to_geojson(self.result)
 
-    def all_traces(self, limit=10):
+    def all_traces(self, limit=TRACES_LIMIT):
         '''
         TODO docstring
         '''
@@ -86,7 +89,7 @@ class Treets(object):
         '''
         TODO docstring
         '''
-        self.result = self.db_client.get_traces_near_point(coords, dist)
+        self.result = self.db_client.get_traces_near_point(coords, dist, limit=TRACES_LIMIT)
         return self.traces_to_geojsons(self.result)
 
     def search_traces_text(self, text):

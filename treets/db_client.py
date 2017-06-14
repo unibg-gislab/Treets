@@ -4,8 +4,8 @@ from __future__ import print_function
 import pymongo
 from random import uniform
 
-TWEETS_LIMIT = 100
-TRACES_LIMIT = 10
+TWEETS_LIMIT = 0
+TRACES_LIMIT = 0
 
 class DBClient(object):
     '''Docstring for DBClient'''
@@ -14,6 +14,18 @@ class DBClient(object):
         super(DBClient, self).__init__()
         self.mongo = pymongo.MongoClient()
         self.db = self.mongo.test
+        self.db.users.create_index('userName')
+        #self.users = self.tweets.distinct('userName')[:limit]
+
+    def create_users_collection(self):
+        users = self.db.tweets.distinct('userName')
+        users_coll = []
+        for u in users:
+            user = {}
+            user['userName'] = u
+            user['tweetsIds'] = self.db.tweets.distinct("_id", {"userName": u})
+            users_coll.append(user)
+        self.db.users.insert_many(users_coll)
 
     def create_locations(self):
         print('creating locations for geo-indexing, this may take a while')
@@ -71,26 +83,25 @@ class DBClient(object):
         '''
         returns tweets posted by user
         '''
-        return self.db.tweets.find({"userName": user}).sort([('_id', -1)]).limit(limit)
+        return self.db.tweets.find({'_id': {'$in': user['tweetsIds']}})
+        #return self.db.tweets.find({"userName": user}).sort([('_id', -1)]).limit(limit)
 
     def get_traces(self, limit=TRACES_LIMIT):
         '''
         Returns first <limit> lists of tweets from the same users
         '''
-        users = self.db.tweets.distinct('userName')[:limit]
         cursors = []
-        for user in users:
-            cursors.append(self.get_tweets_for_user(user, limit=30))
+        for user in self.db.users.find().limit(limit):
+            cursors.append(self.get_tweets_for_user(user))
         return cursors
 
     def get_traces_near_point(self, coords, dist, limit=TRACES_LIMIT):
         '''
         TODO docstring
         '''
-        tweets = self.get_tweets_near_point(coords, dist, limit=TRACES_LIMIT)
-        users = tweets.distinct('userName')[:limit]
+        users = self.get_tweets_near_point(coords, dist, limit=TRACES_LIMIT).distinct('userName')
         cursors = []
-        for user in users:
+        for user in self.db.users.find({'userName': {'$in': users}}):
             cursors.append(self.get_tweets_for_user(user))
         return cursors
 
@@ -98,15 +109,16 @@ class DBClient(object):
         '''
         TODO docstring
         '''
-        tweets = self.get_tweets_for_text(text, limit=TRACES_LIMIT)
-        users = tweets.distinct('userName')[:limit]
+        users = self.get_tweets_for_text(text, limit=TRACES_LIMIT).distinct('userName')
         cursors = []
-        for user in users:
-            cursors.append(self.get_tweets_for_user(user, limit=30))
+        for user in self.db.users.find({'userName': {'$in': users}}):
+            cursors.append(self.get_tweets_for_user(user))
         return cursors
 
 
 
 
 if __name__ == '__main__':
+    client = DBClient()
+    client.create_users_collection()
     pass
