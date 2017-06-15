@@ -8,7 +8,6 @@ import time
 import os
 
 app = Flask(__name__)
-app.debug = True
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 template_args = {}
@@ -212,7 +211,7 @@ def is_number(s):
 
 
 def init():
-    app.run(debug=True)
+    app.run(debug=False)
 
 if __name__ == '__main__':
     init()

@@ -26,8 +26,8 @@ class DBClient(object):
         self.create_users_collection()
         self.remove_users_and_tweets(100)
 
-    def remove_users_and_tweets(self, threshold):
-        found = self.db.users.find( { '$where': "this.tweetsIds.length >" + str(threshold) })
+    def remove_users_and_tweets(self, threshold_max, threshold_min=1):
+        found = self.db.users.find( { '$where': 'this.tweetsIds.length <' + str(threshold_min) + '&& this.tweetsIds.length >' + str(threshold_max) })
         for u in found:
             self.db.tweets.remove({'_id': {'$in': u['tweetsIds']}})
             self.db.users.remove( u )
@@ -39,7 +39,7 @@ class DBClient(object):
         for u in users:
             user = {}
             user['userName'] = u
-            user['tweetsIds'] = self.db.tweets.find({"userName": u}).distinct("_id")
+            user['tweetsIds'] = self.db.tweets.find({'userName': u}).distinct('_id')
             users_coll.append(user)
         self.db.users.insert(users_coll)
 
@@ -99,8 +99,10 @@ class DBClient(object):
         '''
         returns tweets posted by user
         '''
+        if isinstance(user, basestring):
+            user = self.db.users.find_one({'userName': user})
         return self.db.tweets.find({'_id': {'$in': user['tweetsIds']}})
-        #return self.db.tweets.find({"userName": user}).sort([('_id', -1)]).limit(limit)
+        #return self.db.tweets.find({'userName': user}).sort([('_id', -1)]).limit(limit)
 
     def get_traces(self, limit=TRACES_LIMIT):
         '''
@@ -137,4 +139,4 @@ class DBClient(object):
 if __name__ == '__main__':
     client = DBClient()
     client.create_users_collection()
-    client.remove_users_and_tweets(100)
+    client.remove_users_and_tweets(100, 2)
