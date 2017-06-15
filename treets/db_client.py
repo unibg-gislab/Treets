@@ -27,7 +27,7 @@ class DBClient(object):
         self.remove_users_and_tweets(100)
 
     def remove_users_and_tweets(self, threshold_max, threshold_min=1):
-        found = self.db.users.find( { '$where': 'this.tweetsIds.length <' + str(threshold_min) + '&& this.tweetsIds.length >' + str(threshold_max) })
+        found = self.db.users.find( { '$where': 'this.tweetsIds.length >' + str(threshold_max) })
         for u in found:
             self.db.tweets.remove({'_id': {'$in': u['tweetsIds']}})
             self.db.users.remove( u )
@@ -137,5 +137,5 @@ class DBClient(object):
 
 if __name__ == '__main__':
     client = DBClient()
-    client.create_users_collection()
+    #client.create_users_collection()
     client.remove_users_and_tweets(100, 3)
