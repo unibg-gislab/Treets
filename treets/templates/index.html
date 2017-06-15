@@ -34,8 +34,9 @@
                         <div class="tab-pane active" id="user">
                             <form action="/treets/searchUser" method="post">
                                 <div class="form-group">
-                                    <label for="src">utente (senza "@"):</label>
+                                    <label for="src">user (w/o "@"):</label>
                                     <input type="text" class="form-control" id="src" name="src">
+                                    <input type="checkbox" id="exact" name="exact" /> exact match
                                 </div>
                                 <button type="submit" class="btn btn-default" name="searchUser">Search</button>
                             </form>
@@ -43,7 +44,7 @@
                         <div class="tab-pane" id="text">
                             <form action="/treets/searchText" method="post">
                                 <div class="form-group">
-                                    <label for="src">testo:</label>
+                                    <label for="src">Text:</label>
                                     <input type="text" class="form-control" id="src" name="src">
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchText">Search</button>
@@ -52,11 +53,11 @@
                         <div class="tab-pane" id="coordinates">
                             <form action="/treets/geo" method="post">
                                 <div class="form-group">
-                                    <label for="lat">latitudine:</label>
+                                    <label for="lat">lat:</label>
                                     <input type="text" class="form-control" id="lat" name="lat">
-                                    <label for="lon">longitudine:</label>
+                                    <label for="lon">lon:</label>
                                     <input type="text" class="form-control" id="lon" name="lon">
-                                    <label for="radius">raggio [km]:</label>
+                                    <label for="radius">radius [km]:</label>
                                     <input type="text" class="form-control" id="radius" name="radius" value="15">
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchGeo">Search</button>

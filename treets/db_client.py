@@ -99,10 +99,20 @@ class DBClient(object):
         '''
         returns tweets posted by user
         '''
-        if isinstance(user, basestring):
-            user = self.db.users.find_one({'userName': user})
         return self.db.tweets.find({'_id': {'$in': user['tweetsIds']}})
         #return self.db.tweets.find({'userName': user}).sort([('_id', -1)]).limit(limit)
+
+    def get_tweets_for_user_str(self, username, exact=False, limit=TWEETS_LIMIT):
+        cursors = []
+        if exact:
+            user = self.db.users.find_one({'userName': username})
+            if not user: return cursors
+            cursors.append(self.get_tweets_for_user(user))
+        else:
+            for u in self.db.users.find({'$text': {'$search': username}}):
+                cursors.append(self.get_tweets_for_user(u))
+
+        return cursors
 
     def get_traces(self, limit=TRACES_LIMIT):
         '''
@@ -133,11 +143,11 @@ class DBClient(object):
             cursors.append(self.get_tweets_for_user(user))
         return cursors
 
-    def get_traces_for_user(self, username):
+    def get_traces_for_user(self, username, exact_match):
         '''
         TODO docstring
         '''
-        return [self.get_tweets_for_user(username)]
+        return self.get_tweets_for_user_str(username, exact_match)
 
 
 
