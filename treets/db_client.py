@@ -20,16 +20,28 @@ class DBClient(object):
         self.db.tweets.ensure_index([('location', pymongo.GEOSPHERE)])
         #self.users = self.tweets.distinct('userName')[:limit]
 
+    def setup_db(self):
+        self.create_locations()
+        self.check_text_index()
+        self.create_users_collection()
+        self.remove_users_and_tweets(100)
+
+    def remove_users_and_tweets(self, threshold):
+        found = self.db.users.find( { '$where': "this.tweetsIds.length >" + str(threshold) })
+        for u in found:
+            self.db.tweets.remove({'_id': {'$in': u['tweetsIds']}})
+            self.db.users.remove( u )
+
     def create_users_collection(self):
-        self.db.users.delete_many({})
+        self.db.users.remove()
         users = self.db.tweets.distinct('userName')
         users_coll = []
         for u in users:
             user = {}
             user['userName'] = u
-            user['tweetsIds'] = self.db.tweets.distinct("_id", {"userName": u})
+            user['tweetsIds'] = self.db.tweets.find({"userName": u}).distinct("_id")
             users_coll.append(user)
-        self.db.users.insert_many(users_coll)
+        self.db.users.insert(users_coll)
 
     def create_locations(self):
         print('creating locations for geo-indexing, this may take a while')
@@ -125,4 +137,4 @@ class DBClient(object):
 if __name__ == '__main__':
     client = DBClient()
     client.create_users_collection()
-    pass
+    client.remove_users_and_tweets(100)
