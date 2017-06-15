@@ -77,11 +77,11 @@ class Treets(object):
         self.result = self.db_client.get_tweets_for_text(text)
         return self.tweets_to_geojson(self.result)
 
-    def search_user_traces(self, text, exact):
+    def search_user_trace(self, text):
         '''
         TODO docstring
         '''
-        self.result = self.db_client.get_traces_for_user(text, exact)
+        self.result = self.db_client.get_trace_for_user(text)
         return self.traces_to_geojsons(self.result)
 
     def search_traces_near_point(self, coords, dist):
@@ -102,7 +102,7 @@ class Treets(object):
         '''
         TODO docstring
         '''
-        self.result = self.db_client.get_tweets_for_user_str(user_name)
+        self.result = self.db_client.get_tweets_for_user_str(user_name)[0]
         tweets_df = self.data_converter.tweets_to_table(self.result)
         fname =  user_name + '_' + time.strftime("%Y%m%d-%H%M%S") + '.csv'
         tweets_df.to_csv(TMP_FOLDER + fname, index=False, sep=';', encoding='utf-8', decimal=',')
@@ -160,8 +160,7 @@ def searchUser():
     Search for the user
     '''
     user_name = request.form['src'].replace('@', '').lower()
-    exact = False
-    traces, tweets = treets.search_user_traces(user_name, exact)
+    traces, tweets = treets.search_user_trace(user_name)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
 

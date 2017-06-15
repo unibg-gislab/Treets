@@ -102,52 +102,38 @@ class DBClient(object):
         return self.db.tweets.find({'_id': {'$in': user['tweetsIds']}})
         #return self.db.tweets.find({'userName': user}).sort([('_id', -1)]).limit(limit)
 
-    def get_tweets_for_user_str(self, username, exact=False, limit=TWEETS_LIMIT):
-        cursors = []
-        if exact:
-            user = self.db.users.find_one({'userName': username})
-            if not user: return cursors
-            cursors.append(self.get_tweets_for_user(user))
-        else:
-            for u in self.db.users.find({'$text': {'$search': username}}):
-                cursors.append(self.get_tweets_for_user(u))
-
-        return cursors
+    def get_tweets_for_user_str(self, username, limit=TWEETS_LIMIT):
+        user = self.db.users.find_one({'$text': {'$search': username}})
+        return [self.get_tweets_for_user(user)]
 
     def get_traces(self, limit=TRACES_LIMIT):
         '''
         Returns first <limit> lists of tweets from the same users
         '''
-        cursors = []
-        for user in self.db.users.find().limit(limit):
-            cursors.append(self.get_tweets_for_user(user))
-        return cursors
+        users = self.db.users.find().limit(limit)
+        return [self.get_tweets_for_user(user) for user in users]
 
     def get_traces_near_point(self, coords, dist, limit=TRACES_LIMIT):
         '''
         TODO docstring
         '''
         users = self.get_tweets_near_point(coords, dist, limit=TRACES_LIMIT).distinct('userName')
-        cursors = []
-        for user in self.db.users.find({'userName': {'$in': users}}):
-            cursors.append(self.get_tweets_for_user(user))
-        return cursors
+        users_objs = self.db.users.find({'userName': {'$in': users}})
+        return [self.get_tweets_for_user(user) for user in users_objs]
 
     def get_traces_for_text(self, text, limit=TRACES_LIMIT):
         '''
         TODO docstring
         '''
         users = self.get_tweets_for_text(text, limit=TRACES_LIMIT).distinct('userName')
-        cursors = []
-        for user in self.db.users.find({'userName': {'$in': users}}):
-            cursors.append(self.get_tweets_for_user(user))
-        return cursors
+        users_objs = self.db.users.find({'userName': {'$in': users}})
+        return [self.get_tweets_for_user(user) for user in users_objs]
 
-    def get_traces_for_user(self, username, exact_match):
+    def get_trace_for_user(self, username):
         '''
         TODO docstring
         '''
-        return self.get_tweets_for_user_str(username, exact_match)
+        return self.get_tweets_for_user_str(username)
 
 
 
