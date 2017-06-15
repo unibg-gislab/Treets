@@ -91,11 +91,11 @@ class Treets(object):
         self.result = self.db_client.get_traces_near_point(coords, dist, limit=TRACES_LIMIT)
         return self.traces_to_geojsons(self.result)
 
-    def search_traces_text(self, text):
+    def search_traces_text(self, text, limit):
         '''
         TODO docstring
         '''
-        self.result = self.db_client.get_traces_for_text(text)
+        self.result = self.db_client.get_traces_for_text(text, limit)
         return self.traces_to_geojsons(self.result)
 
     def export_trace(self, user_name):
@@ -174,7 +174,7 @@ def searchText():
     '''
     text = request.form['src']
 
-    traces, tweets = treets.search_traces_text(text)
+    traces, tweets = treets.search_traces_text(text, limit=TRACES_LIMIT)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
 
