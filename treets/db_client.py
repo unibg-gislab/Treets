@@ -133,10 +133,16 @@ class DBClient(object):
             cursors.append(self.get_tweets_for_user(user))
         return cursors
 
+    def get_traces_for_user(self, username):
+        '''
+        TODO docstring
+        '''
+        return [self.get_tweets_for_user(username)]
+
 
 
 
 if __name__ == '__main__':
     client = DBClient()
     client.create_users_collection()
-    client.remove_users_and_tweets(100, 2)
+    client.remove_users_and_tweets(100, 3)
