@@ -14,10 +14,12 @@ class DBClient(object):
         super(DBClient, self).__init__()
         self.mongo = pymongo.MongoClient()
         self.db = self.mongo.treets
+        self.db.tweets.create_index('userName')
         self.db.users.create_index('userName')
         #self.users = self.tweets.distinct('userName')[:limit]
 
     def create_users_collection(self):
+        self.db.users.delete_many({})
         users = self.db.tweets.distinct('userName')
         users_coll = []
         for u in users:
