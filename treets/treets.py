@@ -159,8 +159,8 @@ def searchUser():
     '''
     Search for the user
     '''
-    user_name = request.form['src'].replace('@', '')
-    exact = request.form.get('exact')
+    user_name = request.form['src'].replace('@', '').lower()
+    exact = False
     traces, tweets = treets.search_user_traces(user_name, exact)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
