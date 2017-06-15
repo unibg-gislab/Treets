@@ -13,7 +13,7 @@ class DBClient(object):
     def __init__(self):
         super(DBClient, self).__init__()
         self.mongo = pymongo.MongoClient()
-        self.db = self.mongo.test
+        self.db = self.mongo.treets
         self.db.users.create_index('userName')
         #self.users = self.tweets.distinct('userName')[:limit]
 
