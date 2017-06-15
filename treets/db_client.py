@@ -125,7 +125,7 @@ class DBClient(object):
         '''
         TODO docstring
         '''
-        users = self.get_tweets_for_text(text, limit=TRACES_LIMIT).distinct('userName')
+        users = self.get_tweets_for_text(text, limit=limit).distinct('userName')
         users_objs = self.db.users.find({'userName': {'$in': users}}).limit(limit)
         return [self.get_tweets_for_user(user) for user in users_objs]
 
