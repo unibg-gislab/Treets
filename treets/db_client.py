@@ -117,8 +117,8 @@ class DBClient(object):
         '''
         TODO docstring
         '''
-        users = self.get_tweets_near_point(coords, dist, limit=TRACES_LIMIT).distinct('userName')
-        users_objs = self.db.users.find({'userName': {'$in': users}})
+        users = self.get_tweets_near_point(coords, dist).distinct('userName')
+        users_objs = self.db.users.find({'userName': {'$in': users}}).limit(limit)
         return [self.get_tweets_for_user(user) for user in users_objs]
 
     def get_traces_for_text(self, text, limit=TRACES_LIMIT):
@@ -126,7 +126,7 @@ class DBClient(object):
         TODO docstring
         '''
         users = self.get_tweets_for_text(text, limit=TRACES_LIMIT).distinct('userName')
-        users_objs = self.db.users.find({'userName': {'$in': users}})
+        users_objs = self.db.users.find({'userName': {'$in': users}}).limit(limit)
         return [self.get_tweets_for_user(user) for user in users_objs]
 
     def get_trace_for_user(self, username):
@@ -134,9 +134,6 @@ class DBClient(object):
         TODO docstring
         '''
         return self.get_tweets_for_user_str(username)
-
-
-
 
 if __name__ == '__main__':
     client = DBClient()
