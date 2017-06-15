@@ -16,6 +16,8 @@ class DBClient(object):
         self.db = self.mongo.treets
         self.db.tweets.create_index('userName')
         self.db.users.create_index('userName')
+        self.db.tweets.create_index([('textMessage', 'text')])
+        self.db.tweets.ensure_index([('location', pymongo.GEOSPHERE)])
         #self.users = self.tweets.distinct('userName')[:limit]
 
     def create_users_collection(self):
