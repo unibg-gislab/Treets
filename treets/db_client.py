@@ -104,7 +104,10 @@ class DBClient(object):
 
     def get_tweets_for_user_str(self, username, limit=TWEETS_LIMIT):
         user = self.db.users.find_one({'$text': {'$search': username}})
-        return [self.get_tweets_for_user(user)]
+        if user:
+            return [self.get_tweets_for_user(user, limit)]
+        else:
+            return []
 
     def get_traces(self, limit=TRACES_LIMIT):
         '''
