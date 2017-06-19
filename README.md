@@ -3,6 +3,6 @@ Tracked Tweets manual analysis tool
 
 ## Installation
 - clone this repo
-- pip install requirements.txt
+- pip install -r requirements.txt
 
 
