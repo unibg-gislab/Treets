@@ -13,7 +13,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 template_args = {}
 
 TWEETS_LIMIT = 0
-TRACES_LIMIT = 50
+TRACES_LIMIT = 200
 
 TMP_FOLDER = '/tmp/'
 MAPBOX_ACCESS_KEY = 'pk.eyJ1Ijoibmljb2xhOTMiLCJhIjoiY2l2Y2ozYnZ5MDBocTJ5bzZiM284NGkyMiJ9.4VUvTxBv0zqgjY7t3JTFOQ'
@@ -84,11 +84,11 @@ class Treets(object):
         self.result = self.db_client.get_trace_for_user(text)
         return self.traces_to_geojsons(self.result)
 
-    def search_traces_near_point(self, coords, dist):
+    def search_traces_near_point(self, coords, dist, limit):
         '''
         TODO docstring
         '''
-        self.result = self.db_client.get_traces_near_point(coords, dist, limit=TRACES_LIMIT)
+        self.result = self.db_client.get_traces_near_point(coords, dist, limit)
         return self.traces_to_geojsons(self.result)
 
     def search_traces_text(self, text, limit):
@@ -145,14 +145,42 @@ def geo():
     # TODO controllare che l'input sia numerico
     lat = float(request.form['lat'])
     lon = float(request.form['lon'])
+    isLimited = bool(request.form['lim2'])
+    limit = TRACES_LIMIT
+    if isLimited: limit = 0
     radius = float(request.form['radius']) * 1000
     # FIXME: check input with js and alert errors
     # if is_number(lat) and is_number(lon) and is_number(radius) and lat != ''
     # and lon != '' and radius != '':
-    traces, tweets = treets.search_traces_near_point([lon, lat], radius)
+    traces, tweets = treets.search_traces_near_point([lon, lat], radius, limit)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
 
+    
+@app.route('/searchGeolocatedText', methods=['GET', 'POST'])
+def SearchGeolocatedText():
+    '''
+    Search for the input string in the teets' text
+    '''
+    text = request.form['src']
+
+    traces, tweets = treets.search_traces_text(text, limit=TRACES_LIMIT)
+    treets.prepare_template_args(template_args, traces, tweets)
+    '''
+    Search every tweets inside the circle
+    center in gps location
+    radius given by user
+    '''
+    # TODO controllare che l'input sia numerico
+    lat = float(request.form['lat'])
+    lon = float(request.form['lon'])
+    radius = float(request.form['radius']) * 1000
+    # FIXME: check input with js and alert errors
+    # if is_number(lat) and is_number(lon) and is_number(radius) and lat != ''
+    # and lon != '' and radius != '':
+    traces, tweets = treets.search_traces_near_point([lon, lat], radius, limit=TRACES_LIMIT)
+    treets.prepare_template_args(template_args, traces, tweets)
+    return render_template('index.html', template_args=template_args)
 
 @app.route('/searchUser', methods=['GET', 'POST'])
 def searchUser():

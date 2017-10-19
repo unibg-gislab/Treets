@@ -26,25 +26,19 @@
                     <br>
                     <br>
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#user" data-toggle="tab">Username</a></li>
-                        <li><a href="#text" data-toggle="tab">Text</a></li>
+                        <li class="active"><a href="#text" data-toggle="tab">Text</a></li>
                         <li><a href="#coordinates" data-toggle="tab">Coordinates</a></li>
+                        <li><a href="#textcoordinates" data-toggle="tab">Text & Coordinates</a></li>
+                        <li><a href="#user" data-toggle="tab">Username</a></li>
+                        <li><a href="#jcoql" data-toggle="tab">JcoQL</a></li>
                     </ul>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="user">
-                            <form action="/treets/searchUser" method="post">
-                                <div class="form-group">
-                                    <label for="src">user:</label>
-                                    <input type="text" class="form-control" id="src" name="src">
-                                </div>
-                                <button type="submit" class="btn btn-default" name="searchUser">Search</button>
-                            </form>
-                        </div>
-                        <div class="tab-pane" id="text">
+                        <div class="tab-pane active" id="text">
                             <form action="/treets/searchText" method="post">
                                 <div class="form-group">
                                     <label for="src">Text:</label>
                                     <input type="text" class="form-control" id="src" name="src">
+                                    <label for="lim1">Limit:<input type="checkbox" class="form-control" checked id="lim1" name="lim1"></label>
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchText">Search</button>
                             </form>
@@ -58,9 +52,47 @@
                                     <input type="text" class="form-control" id="lon" name="lon">
                                     <label for="radius">radius [km]:</label>
                                     <input type="text" class="form-control" id="radius" name="radius" value="15">
+                                    <label for="lim2" >Limit:<input type="checkbox" class="form-control" checked id="lim2" name="lim2"></label>
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchGeo">Search</button>
                                 <button type="button" class="btn btn-default" name="ShowCircle" onclick="showCircle()">Show circle</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="textcoordinates">
+                            <form action="/treets/searchGeolocatedText" method="post">
+                                <div class="form-group">
+                                    <label for="src">Text:</label>
+                                    <input type="text" class="form-control" id="src2" name="src2">
+                                    <br>
+                                    <label for="lat">lat:</label>
+                                    <input type="text" class="form-control" id="lat2" name="lat2">
+                                    <label for="lon">lon:</label>
+                                    <input type="text" class="form-control" id="lon2" name="lon2">
+                                    <label for="radius">radius [km]:</label>
+                                    <input type="text" class="form-control" id="radius2" name="radius2" value="15">
+                                    <label for="lim3">Limit:<input type="checkbox" class="form-control" checked="checked" id="lim3" name="lim3"></label>
+                                </div>
+                                <button type="submit" class="btn btn-default" name="SearchGeolocatedText">Search</button>
+                                <button type="button" class="btn btn-default" name="ShowCircle2" onclick="showCircle()">Show circle</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="user">
+                            <form action="/treets/searchUser" method="post">
+                                <div class="form-group">
+                                    <label for="src">user:</label>
+                                    <input type="text" class="form-control" id="src" name="src">
+                                </div>
+                                <button type="submit" class="btn btn-default" name="searchUser">Search</button>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="jcoql">
+                            <form action="/treets/query" method="post">
+                                <div class="form-group">
+                                    <label for="src">Query:</label>
+                                    <!--  class="span6"  -->
+                                    <textarea id="query" name="query" class="form-control" cols="40" rows="7"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-default" name="executeQuery">Execute</button>
                             </form>
                         </div>
                     </div>
