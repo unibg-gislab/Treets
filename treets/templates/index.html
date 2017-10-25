@@ -30,7 +30,7 @@
                         <li><a href="#coordinates" data-toggle="tab">Coordinates</a></li>
                         <li><a href="#textcoordinates" data-toggle="tab">Text & Coordinates</a></li>
                         <li><a href="#user" data-toggle="tab">Username</a></li>
-                        <li><a href="#jcoql" data-toggle="tab">JcoQL</a></li>
+                        <li><a href="#jcoql" data-toggle="tab">J-CO-QL</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="text">
@@ -38,7 +38,7 @@
                                 <div class="form-group">
                                     <label for="src">Text:</label>
                                     <input type="text" class="form-control" id="src" name="src">
-                                    <label for="lim1">Limit:<input type="checkbox" class="form-control" checked id="lim1" name="lim1"></label>
+                                    <!--label for="lim1">Limit:<input type="checkbox" class="form-control" checked id="lim1" name="lim1"></label-->
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchText">Search</button>
                             </form>
@@ -52,7 +52,7 @@
                                     <input type="text" class="form-control" id="lon" name="lon">
                                     <label for="radius">radius [km]:</label>
                                     <input type="text" class="form-control" id="radius" name="radius" value="15">
-                                    <label for="lim2" >Limit:<input type="checkbox" class="form-control" checked id="lim2" name="lim2"></label>
+                                    <!--label for="lim2" >Limit:<input type="checkbox" class="form-control" checked id="lim2" name="lim2"></label-->
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchGeo">Search</button>
                                 <button type="button" class="btn btn-default" name="ShowCircle" onclick="showCircle()">Show circle</button>
@@ -61,16 +61,16 @@
                         <div class="tab-pane" id="textcoordinates">
                             <form action="/treets/searchGeolocatedText" method="post">
                                 <div class="form-group">
-                                    <label for="src">Text:</label>
+                                    <label for="src2">Text:</label>
                                     <input type="text" class="form-control" id="src2" name="src2">
                                     <br>
-                                    <label for="lat">lat:</label>
+                                    <label for="lat2">lat:</label>
                                     <input type="text" class="form-control" id="lat2" name="lat2">
-                                    <label for="lon">lon:</label>
+                                    <label for="lon2">lon:</label>
                                     <input type="text" class="form-control" id="lon2" name="lon2">
-                                    <label for="radius">radius [km]:</label>
+                                    <label for="radius2">radius [km]:</label>
                                     <input type="text" class="form-control" id="radius2" name="radius2" value="15">
-                                    <label for="lim3">Limit:<input type="checkbox" class="form-control" checked="checked" id="lim3" name="lim3"></label>
+                                    <!--label for="lim3">Limit:<input type="checkbox" class="form-control" checked="checked" id="lim3" name="lim3"></label-->
                                 </div>
                                 <button type="submit" class="btn btn-default" name="SearchGeolocatedText">Search</button>
                                 <button type="button" class="btn btn-default" name="ShowCircle2" onclick="showCircle()">Show circle</button>

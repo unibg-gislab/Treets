@@ -20,6 +20,8 @@ map.on('dblclick', function (e) {
     lng = JSON.parse(JSON.stringify(e.lngLat)).lng.toFixed(6);
     document.getElementById("lat").value = lat;
     document.getElementById("lon").value = lng;
+    document.getElementById("lat2").value = lat;
+    document.getElementById("lon2").value = lng;
 });
 
 map.on('mousemove', function (e) {

@@ -89,6 +89,25 @@ class DBClient(object):
             }
         }).sort([('_id', -1)])
 
+    def get_tweets_near_point_and_text(self, coords, dist, text, limit=TWEETS_LIMIT):
+        '''
+        returns <limit> tweets whithin <dist> meters from coords
+        '''
+        return self.db.tweets.find(
+        {
+            'location':
+            {
+                '$geoWithin':
+                {
+                    'center': [coords,dist]
+                }
+            },
+            '$text':
+            {
+                '$search': text
+            }
+        }).sort([('_id', -1)])
+
     def get_tweets_for_text(self, text, limit=TWEETS_LIMIT):
         '''
         search for tweets containing <text> and returns results
@@ -121,6 +140,14 @@ class DBClient(object):
         TODO docstring
         '''
         users = self.get_tweets_near_point(coords, dist).distinct('userName')
+        users_objs = self.db.users.find({'userName': {'$in': users}}).limit(limit)
+        return [self.get_tweets_for_user(user) for user in users_objs]
+
+    def get_traces_near_point_and_text(self, coords, dist, text, limit=TRACES_LIMIT):
+        '''
+        TODO docstring
+        '''
+        users = self.get_tweets_near_point_and_text(coords, dist, text).distinct('userName')
         users_objs = self.db.users.find({'userName': {'$in': users}}).limit(limit)
         return [self.get_tweets_for_user(user) for user in users_objs]
 

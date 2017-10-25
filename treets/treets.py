@@ -70,6 +70,13 @@ class Treets(object):
         self.result = self.db_client.get_tweets_near_point(coords, dist)
         return self.tweets_to_geojson(self.result)
 
+    def search_tweets_near_point_and_text(self, coords, text, dist):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_tweets_near_point_and_text(coords, dist, text)
+        return self.tweets_to_geojson(self.result)
+
     def search_tweets_text(self, text):
         '''
         TODO docstring
@@ -89,6 +96,13 @@ class Treets(object):
         TODO docstring
         '''
         self.result = self.db_client.get_traces_near_point(coords, dist, limit)
+        return self.traces_to_geojsons(self.result)
+
+    def search_traces_near_point_and_text(self, coords, dist, text, limit):
+        '''
+        TODO docstring
+        '''
+        self.result = self.db_client.get_traces_near_point_and_text(coords, dist, text, limit)
         return self.traces_to_geojsons(self.result)
 
     def search_traces_text(self, text, limit):
@@ -162,23 +176,17 @@ def SearchGeolocatedText():
     '''
     Search for the input string in the teets' text
     '''
-    text = request.form['src']
-
-    traces, tweets = treets.search_traces_text(text, limit=TRACES_LIMIT)
-    treets.prepare_template_args(template_args, traces, tweets)
     '''
-    Search every tweets inside the circle
-    center in gps location
-    radius given by user
+        Search every tweets inside the circle
+        center in gps location
+        radius given by user
     '''
+    text = request.form['src2']
     # TODO controllare che l'input sia numerico
-    lat = float(request.form['lat'])
-    lon = float(request.form['lon'])
-    radius = float(request.form['radius']) * 1000
-    # FIXME: check input with js and alert errors
-    # if is_number(lat) and is_number(lon) and is_number(radius) and lat != ''
-    # and lon != '' and radius != '':
-    traces, tweets = treets.search_traces_near_point([lon, lat], radius, limit=TRACES_LIMIT)
+    lat = float(request.form['lat2'])
+    lon = float(request.form['lon2'])
+    radius = float(request.form['radius2']) * 1000
+    traces, tweets = treets.search_traces_near_point_and_text([lon, lat], radius, text, limit=TRACES_LIMIT)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
 
