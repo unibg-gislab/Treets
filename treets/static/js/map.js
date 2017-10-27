@@ -52,6 +52,28 @@ function showCircle(){
     });
 }
 
+function showCircle2(){
+    var lat = document.getElementById("lat2").value;
+    var lon = document.getElementById("lon2").value;
+    var radius = document.getElementById("radius2").value;
+
+    if(typeof(map.getSource("polygon")) == "undefined")
+        map.addSource("polygon", createGeoJSONCircle([parseFloat(lon), parseFloat(lat)], parseFloat(radius)));
+    else
+        map.getSource("polygon").setData(createGeoJSONCircle([parseFloat(lon), parseFloat(lat)], parseFloat(radius)).data);
+
+    map.addLayer({
+        "id": "polygon",
+        "type": "fill",
+        "source": "polygon",
+        "layout": {},
+        "paint": {
+            "fill-color": "blue",
+            "fill-opacity": 0.6
+        }
+    });
+}
+
 var createGeoJSONCircle = function(center, radiusInKm, points) {
     if(!points) points = 64;
 

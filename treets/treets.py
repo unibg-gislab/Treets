@@ -159,14 +159,11 @@ def geo():
     # TODO controllare che l'input sia numerico
     lat = float(request.form['lat'])
     lon = float(request.form['lon'])
-    isLimited = bool(request.form['lim2'])
-    limit = TRACES_LIMIT
-    if isLimited: limit = 0
     radius = float(request.form['radius']) * 1000
     # FIXME: check input with js and alert errors
     # if is_number(lat) and is_number(lon) and is_number(radius) and lat != ''
     # and lon != '' and radius != '':
-    traces, tweets = treets.search_traces_near_point([lon, lat], radius, limit)
+    traces, tweets = treets.search_traces_near_point([lon, lat], radius, limit=TRACES_LIMIT)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)
 
@@ -185,7 +182,7 @@ def SearchGeolocatedText():
     # TODO controllare che l'input sia numerico
     lat = float(request.form['lat2'])
     lon = float(request.form['lon2'])
-    radius = float(request.form['radius2']) * 1000
+    radius = float(request.form['radius2'])# * 1000
     traces, tweets = treets.search_traces_near_point_and_text([lon, lat], radius, text, limit=TRACES_LIMIT)
     treets.prepare_template_args(template_args, traces, tweets)
     return render_template('index.html', template_args=template_args)

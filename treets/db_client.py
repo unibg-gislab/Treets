@@ -95,17 +95,9 @@ class DBClient(object):
         '''
         return self.db.tweets.find(
         {
-            'location':
-            {
-                '$geoWithin':
-                {
-                    'center': [coords,dist]
-                }
-            },
-            '$text':
-            {
-                '$search': text
-            }
+            "$and":
+            [{"location":{'$geoWithin':{'$centerSphere': [coords,dist/6378.1]}}},
+            {'$text':{'$search': text}}]
         }).sort([('_id', -1)])
 
     def get_tweets_for_text(self, text, limit=TWEETS_LIMIT):
